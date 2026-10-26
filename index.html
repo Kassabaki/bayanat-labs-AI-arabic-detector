@@ -3,146 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة ترميز البيانات العربية - لوحة المهام الشهرية</title>
+    <title>منصة ترميز البيانات العربية - Bayanat Labs</title>
     <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #0f172a; color: #f8fafc; }
-        .card-bg { background-color: #1e293b; border: 1px solid #334155; }
-        .btn-primary { background-color: #4f46e5; transition: background-color 0.2s; }
-        .btn-primary:hover { background-color: #4338ca; }
-        .active-tab { border-bottom: 3px solid #6366f1; color: #818cf8; font-weight: bold; }
+        body { font-family: 'Cairo', sans-serif; background: #0b0f19; color: #f1f5f9; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .card-glow { box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.15); }
+        .radio-card input:checked + div { border-color: #6366f1; background: rgba(99, 102, 241, 0.1); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
 
-    <!-- Header -->
-    <header class="card-bg shadow-md py-4 px-6 flex justify-between items-center">
-        <div class="flex items-center space-x-4 space-x-reverse">
-            <span class="bg-indigo-600 text-white text-xs px-3 py-1 rounded-full font-semibold" id="current-month-badge">دفعة شهر مايو 2026</span>
-            <h1 class="text-xl font-bold text-white">منصة ترميز البيانات العربية (Bayanat Labs)</h1>
+    <!-- Top Navigation Bar -->
+    <header class="glass-panel border-b border-slate-800 sticky top-0 z-40 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div class="flex items-center space-x-3 space-x-reverse">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center font-black text-xl shadow-lg shadow-indigo-500/30">ب</div>
+            <div>
+                <h1 class="text-lg font-bold text-white tracking-tight">منصة ترميز البيانات العربية</h1>
+                <p class="text-xs text-indigo-400 font-medium">Bayanat Labs · نظام تقييم وعمل المهام الشهرية</p>
+            </div>
         </div>
-        <div class="flex space-x-3 space-x-reverse">
-            <button onclick="exportJSON()" class="bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-2 rounded-lg font-semibold flex items-center shadow">
-                📥 تصدير البيانات (JSON)
+        <div class="flex items-center space-x-3 space-x-reverse">
+            <span id="current-month-badge" class="bg-indigo-950 text-indigo-300 border border-indigo-800 text-xs px-3 py-1.5 rounded-full font-semibold">دفعة أكتوبر 2026</span>
+            <button onclick="exportJSON()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs px-4 py-2.5 rounded-xl font-bold flex items-center shadow-lg shadow-emerald-900/20 transition transform active:scale-95">
+                📥 تصدير النتائج (JSON)
             </button>
         </div>
     </header>
 
-    <!-- Main Container -->
-    <main class="flex-1 container mx-auto p-6 max-w-6xl grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Main Workspace Grid -->
+    <main class="flex-1 container mx-auto p-4 sm:p-6 max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
-        <!-- Left Column: Task Workplace -->
-        <div id="workplace-section" class="lg:col-span-2 card-bg rounded-xl p-6 flex flex-col justify-between shadow-lg">
+        <!-- Left / Center Column: Task Interactive Card (8 Cols) -->
+        <section class="lg:col-span-8 glass-panel rounded-2xl p-6 sm:p-8 card-glow flex flex-col justify-between min-h-[580px]">
             <div>
-                <div class="flex justify-between items-center mb-4">
-                    <span id="task-id-badge" class="text-xs bg-gray-700 text-indigo-300 px-3 py-1 rounded font-mono">ID: task-001</span>
-                    <span id="completion-status" class="text-xs px-3 py-1 rounded-full bg-yellow-900 text-yellow-300 font-semibold">قيد العمل</span>
+                <!-- Task Header Info -->
+                <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-800">
+                    <div class="flex items-center space-x-3 space-x-reverse">
+                        <span id="task-id-badge" class="px-3 py-1 bg-indigo-900/60 border border-indigo-700/50 text-indigo-300 text-xs font-mono rounded-lg font-bold">T-101</span>
+                        <span id="task-category-badge" class="px-3 py-1 bg-slate-800 text-slate-300 text-xs rounded-lg font-semibold">تصنيف الموضوع</span>
+                    </div>
+                    <span id="completion-status" class="text-xs px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-semibold">قيد العمل</span>
                 </div>
 
-                <!-- Text Snippet -->
-                <div class="mb-6">
-                    <label class="block text-xs font-semibold text-gray-400 mb-2">النص الأصلي للمراجعة والتصنيف:</label>
-                    <div id="task-text-display" class="p-4 bg-gray-900 rounded-lg text-lg text-gray-100 border border-gray-700 leading-relaxed min-h-[90px]">
-                        جاري تحميل البيانات...
+                <!-- Text Snippet Box -->
+                <div class="mb-8">
+                    <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">النص المستهدف للمراجعة والترميز:</label>
+                    <div id="task-text-display" class="p-5 bg-slate-900/90 rounded-xl text-lg text-slate-100 border border-slate-800 leading-relaxed shadow-inner min-h-[110px] flex items-center">
+                        جاري تحميل النص...
                     </div>
                 </div>
 
-                <!-- Dynamic Annotation Inputs Based on Task Type -->
-                <div id="annotation-inputs" class="space-y-4 mb-6">
-                    <!-- Injected dynamically -->
+                <!-- Dynamic Options Form -->
+                <div class="mb-6">
+                    <label class="block text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">اختر التصنيف الصحيح:</label>
+                    <div id="annotation-inputs" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- Injected dynamically -->
+                    </div>
                 </div>
             </div>
 
-            <!-- Navigation Buttons -->
-            <div class="flex justify-between items-center pt-4 border-t border-gray-700">
-                <button onclick="prevTask()" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">
-                    ← السابق
+            <!-- Footer Navigation Bar -->
+            <div class="flex justify-between items-center pt-6 border-t border-slate-800 mt-6">
+                <button onclick="prevTask()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-5 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse">
+                    <span>← السابق</span>
                 </button>
-                <div class="text-xs text-gray-400 font-mono" id="progress-indicator">مهمة 1 من 32</div>
-                <button onclick="nextTask()" class="btn-primary text-white px-6 py-2 rounded-lg text-sm font-semibold shadow">
-                    حفظ والتالي ←
+                <div class="text-xs font-mono text-slate-400 bg-slate-900/80 px-4 py-2 rounded-lg border border-slate-800" id="progress-indicator">مهمة 1 من 32</div>
+                <button onclick="nextTask()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/30 transition transform active:scale-95 flex items-center space-x-2 space-x-reverse">
+                    <span>حفظ والتالي ←</span>
                 </button>
             </div>
-        </div>
+        </section>
 
-        <!-- Right Column: Task List & Navigation Sidebar -->
-        <div class="card-bg rounded-xl p-4 flex flex-col h-[600px] shadow-lg">
-            <div class="flex justify-between items-center mb-3 pb-2 border-b border-gray-700">
-                <h2 class="font-bold text-sm text-gray-200">قائمة مهام الشهر الحالي (32 مهمة)</h2>
-                <span id="completed-count" class="text-xs text-indigo-400 font-bold">0 / 32 مكتمل</span>
+        <!-- Right Column: Task List Sidebar (4 Cols) -->
+        <aside class="lg:col-span-4 glass-panel rounded-2xl p-4 sm:p-5 flex flex-col h-[580px] shadow-xl">
+            <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-800">
+                <h2 class="font-bold text-sm text-slate-200 flex items-center space-x-2 space-x-reverse">
+                    <span>📋 مهام دفعة هذا الشهر</span>
+                </h2>
+                <span id="completed-count" class="text-xs bg-indigo-950 text-indigo-300 border border-indigo-800/60 px-2.5 py-1 rounded-full font-bold">0 / 32</span>
             </div>
-            <div id="task-list-container" class="overflow-y-auto flex-1 space-y-2 pr-1">
+            <div id="task-list-container" class="overflow-y-auto flex-1 space-y-2.5 pr-1">
                 <!-- Task list items injected here -->
             </div>
-        </div>
+        </aside>
 
     </main>
 
-    <!-- Thank You Modal / Completion Screen (Hidden by default) -->
-    <div id="thank-you-modal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center p-4 z-50">
-        <div class="card-bg rounded-2xl p-8 max-w-lg w-full text-center shadow-2xl border border-indigo-500">
-            <div class="text-5xl mb-4">🎉</div>
-            <h2 class="text-2xl font-bold text-white mb-2">شكراً لك على إتمام مهام هذا الشهر!</h2>
-            <p class="text-gray-300 text-sm mb-6 leading-relaxed">
-                لقد أكملت بنجاح جميع مهام الترميز والتقييم للدفعة الحالية. تم حفظ إجاباتك محلياً بدقة. يرجى تصدير ملف النتائج بصيغة JSON وإرساله إلى فريق المراجعة.
+    <!-- Thank You / Completion Modal -->
+    <div id="thank-you-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+        <div class="glass-panel rounded-3xl p-8 max-w-md w-full text-center shadow-2xl border border-indigo-500/30 animate-scale">
+            <div class="w-16 h-16 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-2xl mx-auto flex items-center justify-center text-3xl mb-4 shadow-lg shadow-emerald-500/20">🎉</div>
+            <h2 class="text-2xl font-black text-white mb-2">أهلاً بك، تم إتمام مهام الشهر!</h2>
+            <p class="text-slate-300 text-xs mb-6 leading-relaxed">
+                لقد أنجزت بنجاح كافة مهام التقييم والترميز للدفعة الحالية. سيتم توليد مهام جديدة تلقائياً للشهر القادم. يرجى تصدير ملف النتائج بصيغة JSON وإرساله للإدارة.
             </p>
-            <div class="bg-gray-900 p-4 rounded-xl mb-6 text-right text-xs text-gray-300 space-y-2 border border-gray-700">
-                <div>📌 إجمالي المهام المنجزة: <span id="modal-total" class="font-bold text-indigo-400">32</span></div>
-                <div>📅 دورة النظام: <span class="font-bold text-green-400">نشطة (تتجدد شهرياً تلقائياً)</span></div>
+            <div class="bg-slate-900/90 p-4 rounded-xl mb-6 text-right text-xs text-slate-300 space-y-2 border border-slate-800">
+                <div class="flex justify-between"><span>إجمالي المهام المنجزة:</span> <span class="font-bold text-indigo-400">32 / 32</span></div>
+                <div class="flex justify-between"><span>حالة الدفعة الشهرية:</span> <span class="font-bold text-emerald-400">مكتملة بنجاح ✓</span></div>
             </div>
-            <div class="flex space-x-3 space-x-reverse justify-center">
-                <button onclick="exportJSON()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-bold text-sm shadow">
-                    📥 تحميل ملف النتائج النهائي (JSON)
+            <div class="flex flex-col gap-3">
+                <button onclick="exportJSON()" class="bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl font-bold text-xs shadow-lg shadow-indigo-600/30 transition">
+                    📥 تحميل ملف النتائج (JSON)
                 </button>
-                <button onclick="closeThankYouModal()" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-3 rounded-xl text-sm font-semibold">
-                    مراجعة الإجابات
+                <button onclick="closeThankYouModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 py-2.5 rounded-xl text-xs font-semibold transition">
+                    مراجعة الإجابات السابقة
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript Application Logic -->
+    <!-- Script Logic -->
     <script>
-        // 32 Robust Multi-Task Monthly Dataset spanning all 7 categories
         const tasks = [
-            // Category 1: Topic Classification (Topics)
             { id: "T-101", category: "تصنيف الموضوع", type: "topic", text: "أعلنت شركة التقنية الوطنية عن إطلاق نظام جديد للذكاء الاصطناعي لتحسين كفاءة سلاسل الإمداد والتوريد.", options: ["تكنولوجيا", "اقتصاد وعمل", "رياضيات", "حياة يومية"], expected: "تكنولوجيا" },
             { id: "T-102", category: "تصنيف الموضوع", type: "topic", text: "توجّه المنتخب الوطني لكرة القدم إلى العاصمة اليوم استعداداً للمباراة النهائية الحاسمة ضمن البطولات القارية.", options: ["رياضة", "سياسة", "ترفيه", "تكنولوجيا"], expected: "رياضة" },
             { id: "T-103", category: "تصنيف الموضوع", type: "topic", text: "سجلت مؤشرات الأسواق المالية ارتفاعاً ملحوظاً في ختام تعاملات اليوم بدعم من أسهم قطاع الطاقة.", options: ["اقتصاد وعمل", "تكنولوجيا", "صحة", "ترفيه"], expected: "اقتصاد وعمل" },
             { id: "T-104", category: "تصنيف الموضوع", type: "topic", text: "نظمت البلدية مهرجاناً ثقافياً ترفيهياً للعائلات في الحديقة المركزية بمناسبة العطلة الصيفية.", options: ["حياة يومية ومجتمع", "سياسة", "تكنولوجيا", "رياضة"], expected: "حياة يومية ومجتمع" },
-
-            // Category 2: Sentiment Analysis (مشاعر)
             { id: "S-201", category: "تحليل المشاعر", type: "sentiment", text: "يا أخي الخدمة ممتازة والتعامل راقي جداً، شكراً لطاقم العمل على سرعة الاستجابة!", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "إيجابي" },
             { id: "S-202", category: "تحليل المشاعر", type: "sentiment", text: "التطبيق يعلّق كل دقيقة وما عم أقدر أعمل تسجيل دخول بالمرة، أسوأ تجربة!", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "سلبي" },
             { id: "S-203", category: "تحليل المشاعر", type: "sentiment", text: "المنتج وصل بالميعاد المحدد، بس التغليف كان عادي مش زي ما توقعت.", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "مختلط" },
             { id: "S-204", category: "تحليل المشاعر", type: "sentiment", text: "تم نشر جدول مواعيد الرحلات الرسمية للأسبوع القادم على الموقع الإلكتروني.", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "محايد" },
-
-            // Category 3: Intent Detection (كشف النية)
             { id: "I-301", category: "كشف النية", type: "intent", text: "ممكن أعرف كم تكلفة الشحن للمحافظات وهل متاح الدفع عند الاستلام؟", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "استفسار (Inquiry)" },
             { id: "I-302", category: "كشف النية", type: "intent", text: "طلبت الأوردر من أسبوع ولغاية الحين ما وصلني أي رقم تتبع أو اعتذار!", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "شكوى (Complaint)" },
             { id: "I-303", category: "كشف النية", type: "intent", text: "أنصح الجميع بتجربة هذا المطعم، الأكل طازج والأسعار مناسبة جداً للعائلات.", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "توصية (Recommendation)" },
             { id: "I-304", category: "كشف النية", type: "intent", text: "جربت الساعة الذكية لمدة شهر، البطارية ممتازة بس الشاشة ضعيفة تحت الشمس.", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة وتقييم (Review)"], expected: "مراجعة وتقييم (Review)" },
-
-            // Category 4: Dialect Identification (تحديد اللهجة)
             { id: "D-401", category: "تحديد اللهجة", type: "dialect", text: "شو عم تعمل اليوم؟ خلّينا نطلع نشرب قهوة سوا.", options: ["شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "شامي (Levantine)" },
             { id: "D-402", category: "تحديد اللهجة", type: "dialect", text: "وايد حلو المكان، يعطيك العافية ما قصرت على الاستقبال الطيب.", options: ["شامي (Levantine)", "خليجي (Gulf)", "مغربي (Maghrebi)", "فصحى (MSA)"], expected: "خليجي (Gulf)" },
             { id: "D-403", category: "تحديد اللهجة", type: "dialect", text: "إزيك يا باشا، إيه الأخبار الجديدة عندك النهاردة؟", options: ["شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "مصري (Egyptian)" },
             { id: "D-404", category: "تحديد اللهجة", type: "dialect", text: "تُعد هذه اللوائح التنظيمية خطوة هامة نحو تعزيز الشفافية المؤسسية.", options: ["شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "فصحى (MSA)" },
-
-            // Category 5: Content Safety & Flagging (فلترة الجودة)
             { id: "F-501", category: "فلترة جودة المحتوى", type: "safety", text: "اشتريت جهاز وتلفون واشتريت كورس وبكرة بروح عادي أصلاً...", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful)"], expected: "غامق/غير مبهم (Ambiguous)" },
             { id: "F-502", category: "فلترة جودة المحتوى", type: "safety", text: "ربحححححت معنا 100000000$ اضغط على الرابط فورررراً!! www.fake-win.com", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful)"], expected: "سبام/جودة منخفضة (Spam)" },
             { id: "F-503", category: "فلترة جودة المحتوى", type: "safety", text: "المقال يحتوي على تفاصيل ممتازة وشرح وافي لموضوع أمن الشبكات.", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful)"], expected: "سليم (Clean)" },
             { id: "F-504", category: "فلترة جودة المحتوى", type: "safety", text: "يا حقير أنت شخص لا تفهم شيئاً وتباً لك ولرأيك!", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful/Offensive)"], expected: "مسيء/ضار (Harmful/Offensive)" },
-
-            // Category 6: E-Commerce Reviews (تقييمات التجارة الإلكترونية)
             { id: "E-601", category: "تقييمات التجارة الإلكترونية", type: "ecommerce", text: "السماعات صوتها نقي جداً وعزل الضوضاء قوي، بنصح فيها بشدة.", options: ["إيجابي - تقييم عالي", "سلبي - مشكلة صوت", "محايد", "غير متأكد"], expected: "إيجابي - تقييم عالي" },
             { id: "E-602", category: "تقييمات التجارة الإلكترونية", type: "ecommerce", text: "المقاس طلع أصغر بكتير من المكتوب بجدول المقاسات، بدي أطلب إرجاع.", options: ["إيجابي", "سلبي - خطأ مقاس", "محايد", "استفسار"], expected: "سلبي - خطأ مقاس" },
             { id: "E-603", category: "تقييمات التجارة الإلكترونية", type: "ecommerce", text: "الغسالة كويسة بس صوتها عالي شوية وقت العصر وسعرها معقول.", options: ["إيجابي تماماً", "مختلط (أداء جيد وصوت مرتفع)", "سلبي بالكامل", "غير مفيد"], expected: "مختلط (أداء جيد وصوت مرتفع)" },
             { id: "E-604", category: "تقييمات التجارة الإلكترونية", type: "ecommerce", text: "الكتاب وصل تالف والصفحات ممزقة من الإهمال بالشحن.", options: ["تلف شحن - سلبي", "إيجابي", "محايد", "جيد جداً"], expected: "تلف شحن - سلبي" },
-
-            // Category 7: Social Media Posts (منشورات وسائل التواصل)
             { id: "M-701", category: "منشورات وسائل التواصل", type: "social", text: "صباح الخير أصدقائي! شو خططكم لنهاية الأسبوع الجاري؟", options: ["تفاعل اجتماعي إيجابي", "شكوى عامة", "خبر عاجل", "إعلان تجاري"], expected: "تفاعل اجتماعي إيجابي" },
             { id: "M-702", category: "منشورات وسائل التواصل", type: "social", text: "سعيد جداً بمشاركتي اليوم في مؤتمر التكنولوجيا المالي وتطوير حلول السحابة.", options: ["إنجاز مهني / إيجابي", "سلبي", "استفسار", "محايد"], expected: "إنجاز مهني / إيجابي" },
             { id: "M-703", category: "منشورات وسائل التواصل", type: "social", text: "زحمة غير طبيعية في الطريق الرئيسي صباح اليوم، يفضل استخدام طرق بديلة.", options: ["تنبيه مجتمعي / خدمة عامة", "إعلان", "ترفيه", "رياضة"], expected: "تنبيه مجتمعي / خدمة عامة" },
@@ -155,19 +156,11 @@
         function initApp() {
             renderTaskList();
             loadTask(currentIndex);
-            updateBadge();
-        }
-
-        function updateBadge() {
-            const date = new Date();
-            const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
-            document.getElementById('current-month-badge').innerText = `دفعة شهر ${months[date.getMonth()]} ${date.getFullYear()}`;
         }
 
         function renderTaskList() {
             const container = document.getElementById('task-list-container');
             container.innerHTML = '';
-            
             let completedCount = 0;
 
             tasks.forEach((task, idx) => {
@@ -175,22 +168,25 @@
                 if (isCompleted) completedCount++;
 
                 const item = document.createElement('div');
-                item.className = `p-3 rounded-lg cursor-pointer text-xs flex justify-between items-center transition ${idx === currentIndex ? 'bg-indigo-900 border border-indigo-500' : 'bg-gray-900 hover:bg-gray-800'}`;
+                item.className = `p-3 rounded-xl cursor-pointer text-xs flex justify-between items-center transition-all ${idx === currentIndex ? 'bg-indigo-900/50 border border-indigo-500/80 shadow-md' : 'bg-slate-900/60 hover:bg-slate-800 border border-slate-800/60'}`;
                 item.onclick = () => { currentIndex = idx; loadTask(currentIndex); };
                 
                 item.innerHTML = `
-                    <div>
-                        <span class="font-mono text-indigo-300 font-bold">${task.id}</span>
-                        <div class="text-gray-300 truncate w-48 mt-1">${task.text}</div>
+                    <div class="truncate flex-1 ml-2">
+                        <div class="flex items-center space-x-2 space-x-reverse">
+                            <span class="font-mono text-indigo-400 font-bold">${task.id}</span>
+                            <span class="text-[10px] text-slate-400">(${task.category})</span>
+                        </div>
+                        <div class="text-slate-300 truncate mt-0.5">${task.text}</div>
                     </div>
-                    <span class="px-2 py-1 rounded text-[10px] ${isCompleted ? 'bg-green-900 text-green-300' : 'bg-gray-800 text-gray-400'}">
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold ${isCompleted ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-slate-800 text-slate-400'}">
                         ${isCompleted ? 'مكتمل' : 'معلق'}
                     </span>
                 `;
                 container.appendChild(item);
             });
 
-            document.getElementById('completed-count').innerText = `${completedCount} / ${tasks.length} مكتمل`;
+            document.getElementById('completed-count').innerText = `${completedCount} / ${tasks.length}`;
             if (completedCount === tasks.length) {
                 document.getElementById('thank-you-modal').classList.remove('hidden');
             }
@@ -198,29 +194,25 @@
 
         function loadTask(idx) {
             const task = tasks[idx];
-            document.getElementById('task-id-badge').innerText = `ID: ${task.id} | ${task.category}`;
+            document.getElementById('task-id-badge').innerText = task.id;
+            document.getElementById('task-category-badge').innerText = task.category;
             document.getElementById('task-text-display').innerText = task.text;
             document.getElementById('progress-indicator').innerText = `مهمة ${idx + 1} من ${tasks.length}`;
 
             const inputsContainer = document.getElementById('annotation-inputs');
-            inputsContainer.innerHTML = `
-                <label class="block text-xs font-semibold text-gray-400 mb-2">اختر التصنيف المناسب:</label>
-                <div class="grid grid-cols-2 gap-3">
-                    ${task.options.map(opt => `
-                        <label class="flex items-center space-x-3 space-x-reverse p-3 bg-gray-900 rounded-lg border border-gray-700 cursor-pointer hover:border-indigo-500 transition">
-                            <input type="radio" name="annotation_choice" value="${opt}" ${userResponses[task.id] === opt ? 'checked' : ''} class="text-indigo-600 focus:ring-indigo-500 h-4 w-4">
-                            <span class="text-sm text-gray-200">${opt}</span>
-                        </label>
-                    `).join('')}
-                </div>
-            `;
+            inputsContainer.innerHTML = task.options.map(opt => `
+                <label class="radio-card relative flex items-center p-3.5 bg-slate-900/90 rounded-xl border border-slate-800 cursor-pointer hover:border-slate-700 transition">
+                    <input type="radio" name="annotation_choice" value="${opt}" ${userResponses[task.id] === opt ? 'checked' : ''} class="text-indigo-600 focus:ring-indigo-500 h-4 w-4 ml-3">
+                    <span class="text-xs sm:text-sm text-slate-200 font-medium">${opt}</span>
+                </label>
+            `).join('');
 
             const statusBadge = document.getElementById('completion-status');
             if (userResponses[task.id]) {
-                statusBadge.className = 'text-xs px-3 py-1 rounded-full bg-green-900 text-green-300 font-semibold';
-                statusBadge.innerText = 'مكتمل';
+                statusBadge.className = 'text-xs px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold';
+                statusBadge.innerText = 'مكتمل ✓';
             } else {
-                statusBadge.className = 'text-xs px-3 py-1 rounded-full bg-yellow-900 text-yellow-300 font-semibold';
+                statusBadge.className = 'text-xs px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-semibold';
                 statusBadge.innerText = 'قيد العمل';
             }
 
@@ -245,22 +237,20 @@
 
         function nextTask() { saveCurrentAndMove(1); }
         function prevTask() { saveCurrentAndMove(-1); }
-
-        function closeThankYouModal() {
-            document.getElementById('thank-you-modal').classList.add('hidden');
-        }
+        function closeThankYouModal() { document.getElementById('thank-you-modal').classList.add('hidden'); }
 
         function exportJSON() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({
-                annotator_session: "user_" + Math.random().toString(36).substring(2, 8),
-                submission_date: new Date().toISOString(),
-                total_tasks: tasks.length,
+                annotator_session: "annotator_" + Math.random().toString(36).substring(2, 8),
+                batch_period: "October 2026",
+                submission_timestamp: new Date().toISOString(),
+                total_tasks_completed: Object.keys(userResponses).length,
                 responses: userResponses
             }, null, 4));
             
             const downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "arabic_annotation_monthly_results.json");
+            downloadAnchor.setAttribute("download", "arabic_annotation_results_october_2026.json");
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
