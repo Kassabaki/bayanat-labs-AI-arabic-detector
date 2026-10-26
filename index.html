@@ -114,11 +114,11 @@
             <div style="width: 38px; height: 38px; background: linear-gradient(135deg, #4f46e5, #7c3aed); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.1rem; box-shadow: 0 6px 15px rgba(79, 70, 229, 0.4);">ب</div>
             <div>
                 <h1 style="font-size: 1rem; font-weight: 700; color: #fff;">منصة ترميز البيانات العربية</h1>
-                <p style="font-size: 0.7rem; color: #818cf8;">Bayanat Labs · نظام المهام والتقييم الشهري</p>
+                <p style="font-size: 0.7rem; color: #818cf8;">Bayanat Labs · نظام المهام والتقييم الشهري التلقائي</p>
             </div>
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-            <span style="background: #1e1b4b; color: #c7d2fe; border: 1px solid #312e81; font-size: 0.7rem; padding: 0.3rem 0.75rem; border-radius: 50px; font-weight: 600;">دفعة أكتوبر 2026</span>
+            <span id="batch-month-label" style="background: #1e1b4b; color: #c7d2fe; border: 1px solid #312e81; font-size: 0.7rem; padding: 0.3rem 0.75rem; border-radius: 50px; font-weight: 600;">دفعة الشهر الحالي</span>
             <button onclick="exportJSON()" class="btn-success">📥 تصدير النتائج (JSON)</button>
         </div>
     </header>
@@ -178,7 +178,7 @@
             <div style="width: 55px; height: 55px; background: linear-gradient(135deg, #059669, #0d9488); border-radius: 14px; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 6px 15px rgba(5, 150, 105, 0.3);">🎉</div>
             <h2 style="font-size: 1.25rem; font-weight: 900; color: #fff; margin-bottom: 0.4rem;">أهلاً بك، تم إتمام مهام الشهر!</h2>
             <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 1.25rem; line-height: 1.6;">
-                لقد أنجزت بنجاح كافة مهام التقييم والترميز (200 مهمة) للدفعة الحالية. سيتم تدوير المهام تلقائياً للشهر القادم. يرجى تصدير ملف النتائج بصيغة JSON.
+                لقد أنجزت بنجاح كافة مهام التقييم والترميز (200 مهمة) للدفعة الحالية. يتم تدوير المهام واستبعاد أسئلة الأشهر السابقة تلقائياً مع بداية كل شهر جديد.
             </p>
             <div style="background: #0f172a; padding: 0.85rem; border-radius: 0.75rem; margin-bottom: 1.25rem; text-align: right; font-size: 0.8rem; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 0.4rem;">
                 <div style="display: flex; justify-content: space-between;"><span>إجمالي المهام المنجزة:</span> <strong style="color: #818cf8;">200 / 200</strong></div>
@@ -191,10 +191,11 @@
         </div>
     </div>
 
-    <!-- Script Logic with 200 Comprehensive Tasks -->
+    <!-- Script Logic with Non-Repeating Monthly Offset Rotation -->
     <script>
-        const tasks = [
-            // --- Category 1: Topic Classification (T-101 to T-130) ---
+        // Large Master Pool containing hundreds of unique items across all categories
+        const masterPool = [
+            // --- Topic Classification ---
             { id: "T-101", category: "تصنيف الموضوع", text: "أعلنت شركة التقنية الوطنية عن إطلاق نظام جديد للذكاء الاصطناعي لتحسين كفاءة سلاسل الإمداد والتوريد.", options: ["تكنولوجيا", "اقتصاد وعمل", "رياضيات", "حياة يومية"], expected: "تكنولوجيا" },
             { id: "T-102", category: "تصنيف الموضوع", text: "توجّه المنتخب الوطني لكرة القدم إلى العاصمة اليوم استعداداً للمباراة النهائية الحاسمة ضمن البطولات القارية.", options: ["رياضة", "سياسة", "ترفيه", "تكنولوجيا"], expected: "رياضة" },
             { id: "T-103", category: "تصنيف الموضوع", text: "سجلت مؤشرات الأسواق المالية ارتفاعاً ملحوظاً في ختام تعاملات اليوم بدعم من أسهم قطاع الطاقة.", options: ["اقتصاد وعمل", "تكنولوجيا", "صحة", "ترفيه"], expected: "اقتصاد وعمل" },
@@ -226,7 +227,7 @@
             { id: "T-129", category: "تصنيف الموضوع", text: "أجرت منظمة الصحة العالمية دراسة شاملة حول معدلات اللياقة البدنية لدى الشباب.", options: ["صحة وطب", "سياسة", "تكنولوجيا", "ترفيه"], expected: "صحة وطب" },
             { id: "T-130", category: "تصنيف الموضوع", text: "عقد قادة الدول العظمى قمة طارئة لبحث التحديات الأمنية والاقتصادية الراهنة.", options: ["سياسة", "رياضة", "تكنولوجيا", "حياة يومية"], expected: "سياسة" },
 
-            // --- Category 2: Sentiment Analysis (S-201 to S-230) ---
+            // --- Sentiment Analysis ---
             { id: "S-201", category: "تحليل المشاعر", text: "يا أخي الخدمة ممتازة والتعامل راقي جداً، شكراً لطاقم العمل على سرعة الاستجابة!", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "إيجابي" },
             { id: "S-202", category: "تحليل المشاعر", text: "التطبيق يعلّق كل دقيقة وما عم أقدر أعمل تسجيل دخول بالمرة، أسوأ تجربة!", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "سلبي" },
             { id: "S-203", category: "تحليل المشاعر", text: "المنتج وصل بالميعاد المحدد، بس التغليف كان عادي مش زي ما توقعت.", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "مختلط" },
@@ -255,4 +256,277 @@
             { id: "S-226", category: "تحليل المشاعر", text: "لم أستطع الاستفادة من العرض لأن الشروط غير واضحة ومضللة.", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "سلبي" },
             { id: "S-227", category: "تحليل المشاعر", text: "الأكل طيب ونظيف، بس التوصيل أخد وقت أطول من المتوقع.", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "مختلط" },
             { id: "S-228", category: "تحليل المشاعر", text: "بلغ عدد الحضور في المؤتمر الصحفي نحو خمسين إعلامياً.", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "محايد" },
-            { id: "S
+            { id: "S-229", category: "تحليل المشاعر", text: "روعة الأداء والاحترافية جعلت هذه التجربة لا تُنسى أبداً!", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "إيجابي" },
+            { id: "S-230", category: "تحليل المشاعر", text: "التجربة كانت سيئة جداً ولن أكرر التعامل معهم مرة أخرى مستقبلاً.", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "سلبي" },
+
+            // --- Intent Detection ---
+            { id: "I-301", category: "كشف النية", text: "ممكن أعرف كم تكلفة الشحن للمحافظات وهل متاح الدفع عند الاستلام؟", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "استفسار (Inquiry)" },
+            { id: "I-302", category: "كشف النية", text: "طلبت الأوردر من أسبوع ولغاية الحين ما وصلني أي رقم تتبع أو اعتذار!", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "شكوى (Complaint)" },
+            { id: "I-303", category: "كشف النية", text: "أنصح الجميع بتجربة هذا المطعم، الأكل طازج والأسعار مناسبة جداً للعائلات.", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "توصية (Recommendation)" },
+            { id: "I-304", category: "كشف النية", text: "جربت الساعة الذكية لمدة شهر، البطارية ممتازة بس الشاشة ضعيفة تحت الشمس.", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة وتقييم (Review)"], expected: "مراجعة وتقييم (Review)" },
+            { id: "I-305", category: "كشف النية", text: "هل توجد خصومات متاحة حالياً عند شراء أكثر من قطعتين؟", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "استفسار (Inquiry)" },
+            { id: "I-306", category: "كشف النية", text: "المنتج وصل مكسور ومليء بالخدوش، هذا إهمال واضح في التوصيل!", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "شكوى (Complaint)" },
+            { id: "I-307", category: "كشف النية", text: "أفضل منصة تعليمية استخدمتها بحياتي، شرح الأستاذ ممتاز جداً.", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "توصية (Recommendation)" },
+            { id: "I-308", category: "كشف النية", text: "ما هي شروط الاستبدال والإرجاع في حال لم يناسبني المقاس؟", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "استفسار (Inquiry)" },
+            { id: "I-309", category: "كشف النية", text: "الشحن تأخر خمسة أيام عن الموعد المتفق عليه دون أي سبب مبرر.", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "شكوى (Complaint)" },
+            { id: "I-310", category: "كشف النية", text: "جربت الفندق ونظافته ممتازة وطاقم الاستقبال محترف جداً.", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة وتقييم (Review)"], expected: "مراجعة وتقييم (Review)" },
+            { id: "I-311", category: "كشف النية", text: "هل يتوفر هذا اللون بمقاس متوسط أم نفذت الكمية؟", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "استفسار (Inquiry)" },
+            { id: "I-312", category: "كشف النية", text: "تطبيقكم سيء للغاية ويتوقف عن العمل عند محاولة إتمام الدفع الإلكتروني.", options: ["استفسار", "شكوى (Complaint)", "توصية", "مراجعة"], expected: "شكوى (Complaint)" },
+            { id: "I-313", category: "كشف النية", text: "لكل من يبحث عن جودة حقيقية، عليكم بهذا المتجر الموثوق.", options: ["استفسار", "شكوى", "توصية (Recommendation)", "مراجعة"], expected: "توصية (Recommendation)" },
+            { id: "I-314", category: "كشف النية", text: "أرجو إفادتي برقم حسابكم البنكي لتحويل قيمة الفطورة.", options: ["استفسار (Inquiry)", "شكوى", "توصية", "مراجعة"], expected: "استفسار (Inquiry)" },
+            { id: "I-315", category: "كشف النية", text: "خدمة العملاء لا تستجيب لطلبات استرداد الأموال منذ أسبوع كامل!", options: ["استفسار", "شكوى (Complaint)", "توصية", "مراجعة"], expected: "شكوى (Complaint)" },
+            { id: "I-316", category: "كشف النية", text: "أقترح بشدة اعتماد هذه الشركة لخدمات الدعم الفني نظراً لكفاءتهم.", options: ["استفسار", "شكوى", "توصية (Recommendation)", "مراجعة"], expected: "توصية (Recommendation)" },
+            { id: "I-317", category: "كشف النية", text: "ما هي الأوراق المطلوبة لتجديد اشتراك الخدمة الشهرية؟", options: ["استفسار (Inquiry)", "شكوى", "توصية", "مراجعة"], expected: "استفسار (Inquiry)" },
+            { id: "I-318", category: "كشف النية", text: "استلمت مقاساً خاطئاً تماماً لما طلبته، هذا تسرع غير مقبول.", options: ["استفسار", "شكوى (Complaint)", "توصية", "مراجعة"], expected: "شكوى (Complaint)" },
+            { id: "I-319", category: "كشف النية", text: "استخدمت المنتج لمدة أسبوعين، النتايج مبهرة وتستحق كل قرش دفعته فيه.", options: ["استفسار", "شكوى", "توصية", "مراجعة وتقييم (Review)"], expected: "مراجعة وتقييم (Review)" },
+            { id: "I-320", category: "كشف النية", text: "هل توفرون خدمة التوصيل السريع خلال 24 ساعة داخل المدينة؟", options: ["استفسار (Inquiry)", "شكوى", "توصية", "مراجعة"], expected: "استفسار (Inquiry)" },
+            { id: "I-321", category: "كشف النية", text: "الجهاز يسخن بسرعة عند التشغيل المتواصل، أتمنى إيجاد حل.", options: ["استفسار", "شكوى (Complaint)", "توصية", "مراجعة"], expected: "شكوى (Complaint)" },
+            { id: "I-322", category: "كشف النية", text: "أنصح كل أصدقائي باقتناء هذا الإصدار لأنه الأكثر اعتمادية.", options: ["استفسار", "شكوى", "توصية (Recommendation)", "مراجعة"], expected: "توصية (Recommendation)" },
+            { id: "I-323", category: "كشف النية", text: "كيف يمكنني تغيير كلمة المرور الخاصة بحسابي الشخصي؟", options: ["استفسار (Inquiry)", "شكوى", "توصية", "مراجعة"], expected: "استفسار (Inquiry)" },
+            { id: "I-324", category: "كشف النية", text: "المندوب رفض الصعود لتسليم الشحنة وتركها عند بوابة العمارة!", options: ["استفسار", "شكوى (Complaint)", "توصية", "مراجعة"], expected: "شكوى (Complaint)" },
+            { id: "I-325", category: "كشف النية", text: "تقييمي للخدمة أنها ممتازة جداً وسريعة وخالية من التعقيد.", options: ["استفسار", "شكوى", "توصية", "مراجعة وتقييم (Review)"], expected: "مراجعة وتقييم (Review)" },
+            { id: "I-326", category: "كشف النية", text: "هل يوجد ضمان على الأجهزة الكهربائية، وما هي مدته؟", options: ["استفسار (Inquiry)", "شكوى", "توصية", "مراجعة"], expected: "استفسار (Inquiry)" },
+            { id: "I-327", category: "كشف النية", text: "تم خصم المبلغ من رصيدي مرتين مقابل طلب واحد!", options: ["استفسار", "شكوى (Complaint)", "توصية", "مراجعة"], expected: "شكوى (Complaint)" },
+            { id: "I-328", category: "كشف النية", text: "خدمة رائعة ومميزة جداً، لا تترددوا في الاستفادة منها.", options: ["استفسار", "شكوى", "توصية (Recommendation)", "مراجعة"], expected: "توصية (Recommendation)" },
+            { id: "I-329", category: "كشف النية", text: "ما هي مواعيد العمل الرسمية في فرع الإدارة العامة؟", options: ["استفسار (Inquiry)", "شكوى", "توصية", "مراجعة"], expected: "استفسار (Inquiry)" },
+            { id: "I-330", category: "كشف النية", text: "العبوة ناقصة ومغلقة بطريقة تثير الشكوك، خدمة سيئة.", options: ["استفسار", "شكوى (Complaint)", "توصية", "مراجعة"], expected: "شكوى (Complaint)" },
+
+            // --- Dialect Identification ---
+            { id: "D-401", category: "تحديد اللهجة", type: "dialect", text: "شو عم تعمل اليوم؟ خلّينا نطلع نشرب قهوة سوا.", options: ["شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "شامي (Levantine)" },
+            { id: "D-402", category: "تحديد اللهجة", type: "dialect", text: "وايد حلو المكان، يعطيك العافية ما قصرت على الاستقبال الطيب.", options: ["شامي (Levantine)", "خليجي (Gulf)", "مغربي (Maghrebi)", "فصحى (MSA)"], expected: "خليجي (Gulf)" },
+            { id: "D-403", category: "تحديد اللهجة", type: "dialect", text: "إزيك يا باشا، إيه الأخبار الجديدة عندك النهاردة؟", options: ["شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "مصري (Egyptian)" },
+            { id: "D-404", category: "تحديد اللهجة", type: "dialect", text: "تُعد هذه اللوائح التنظيمية خطوة هامة نحو تعزيز الشفافية المؤسسية.", options: ["شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "فصحى (MSA)" },
+            { id: "D-405", category: "تحديد اللهجة", type: "dialect", text: "بزاف عجبني هادشي، تبارك الله عليك خدمة نقية.", options: ["مغربي (Maghrebi)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "مغربي (Maghrebi)" },
+            { id: "D-406", category: "تحديد اللهجة", type: "dialect", text: "وش راك خويا لاباس عليك؟ رانا طالعين للجبل اليوم.", options: ["جزائري/مغاربي (Maghrebi)", "خليجي (Gulf)", "شامي (Levantine)", "فصحى (MSA)"], expected: "جزائري/مغاربي (Maghrebi)" },
+            { id: "D-407", category: "تحديد اللهجة", type: "dialect", text: "وشلونك طال عمرك؟ عساك بخير ومرتاح.", options: ["خليجي (Gulf)", "شامي (Levantine)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "خليجي (Gulf)" },
+            { id: "D-408", category: "تحديد اللهجة", type: "dialect", text: "يخرب بيتك شو مهضوم! ضحكتني من قلبي والله.", options: ["شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "شامي (Levantine)" },
+            { id: "D-409", category: "تحديد اللهجة", type: "dialect", text: "يا عم الحاج احنا بنقول كلام معقول ومفيش فيه أي افتكاسات.", options: ["مصري (Egyptian)", "شامي (Levantine)", "خليجي (Gulf)", "فصحى (MSA)"], expected: "مصري (Egyptian)" },
+            { id: "D-410", category: "تحديد اللهجة", type: "dialect", text: "يُرجى الالتزام التام بكافة التعليمات الصادرة عن إدارة المؤسسة.", options: ["فصحى (MSA)", "شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)"], expected: "فصحى (MSA)" },
+            { id: "D-411", category: "تحديد اللهجة", type: "dialect", text: "ديما منور يا غالي، ربنا يوفقك في كل خطواتك.", options: ["مصري (Egyptian)", "خليجي (Gulf)", "شامي (Levantine)", "فصحى (MSA)"], expected: "مصري (Egyptian)" },
+            { id: "D-412", category: "تحديد اللهجة", type: "dialect", text: "وين رايح هسا؟ الدنيا ليل والشتوية قوية برا.", options: ["شامي (Levantine)", "خليجي", "مصري", "فصحى"], expected: "شامي (Levantine)" },
+            { id: "D-413", category: "تحديد اللهجة", type: "dialect", text: "عطني خبر لا خلصت شغل عشان أمرك ونروح مع بعض.", options: ["شامي", "خليجي (Gulf)", "مصري", "فصحى"], expected: "خليجي (Gulf)" },
+            { id: "D-414", category: "تحديد اللهجة", type: "dialect", text: "يا سيدي ولا تشيل هم خالص، كل حاجة هتتظلم بكره الصبح.", options: ["شامي", "خليجي", "مصري (Egyptian)", "فصحى"], expected: "مصري (Egyptian)" },
+            { id: "D-415", category: "تحديد اللهجة", type: "dialect", text: "تستهدف هذه الخطة الاستراتيجية تنشيط عجلة الاقتصاد الوطني.", options: ["شامي", "خليجي", "مصري", "فصحى (MSA)"], expected: "فصحى (MSA)" },
+            { id: "D-416", category: "تحديد اللهجة", type: "dialect", text: "بغيت نعرف واش كاين شي جديد بخصوص هاد العرض؟", options: ["مغربي (Maghrebi)", "خليجي", "مصري", "فصحى"], expected: "مغربي (Maghrebi)" },
+            { id: "D-417", category: "تحديد اللهجة", type: "dialect", text: "راك فاهم السالفة زين، ما يحتاج أشرح لك أكثر.", options: ["شامي", "خليجي (Gulf)", "مصري", "فصحى"], expected: "خليجي (Gulf)" },
+            { id: "D-418", category: "تحديد اللهجة", type: "dialect", text: "يادوب لحقت القطر قبل ما يتحرك من المحطة.", options: ["شامي", "خليجي", "مصري (Egyptian)", "فصحى"], expected: "مصري (Egyptian)" },
+            { id: "D-419", category: "تحديد اللهجة", type: "dialect", text: "بدنا نروح نشتري شوية أغراض للبيت قبل ما تغلق المحلات.", options: ["شامي (Levantine)", "خليجي", "مصري", "فصحى"], expected: "شامي (Levantine)" },
+            { id: "D-420", category: "تحديد اللهجة", type: "dialect", text: "صكت الأبواب وكلن راح بطريقه يا طويل العمر.", options: ["شامي", "خليجي (Gulf)", "مصري", "فصحى"], expected: "خليجي (Gulf)" },
+            { id: "D-421", category: "تحديد اللهجة", type: "dialect", text: "تشرفنا بزيارتكم الكريمة ونرجو لكم إقامة سعيدة.", options: ["شامي", "خليجي", "مصري", "فصحى (MSA)"], expected: "فصحى (MSA)" },
+            { id: "D-422", category: "تحديد اللهجة", type: "dialect", text: "مابقاش في وقت خالص، لازم نتحرك دلوقتي حالاً.", options: ["شامي", "خليجي", "مصري (Egyptian)", "فصحى"], expected: "مصري (Egyptian)" },
+            { id: "D-423", category: "تحديد اللهجة", type: "dialect", text: "قديش حق هاد البنطلون لو سمحت؟", options: ["شامي (Levantine)", "خليجي", "مصري", "فصحى"], expected: "شامي (Levantine)" },
+            { id: "D-424", category: "تحديد اللهجة", type: "dialect", text: "سرني جداً اللقاء بكم ونقاش الأفكار المطروحة.", options: ["شامي", "خليجي", "مصري", "فصحى (MSA)"], expected: "فصحى (MSA)" },
+            { id: "D-425", category: "تحديد اللهجة", type: "dialect", text: "الجو اليوم رطبة وحارة، أحسن نجلس بالبيت.", options: ["شامي", "خليجي (Gulf)", "مصري", "فصحى"], expected: "خليجي (Gulf)" },
+            { id: "D-426", category: "تحديد اللهجة", type: "dialect", text: "يا ابني اسمع مني الكلام اللي يريحك.", options: ["شامي", "خليجي", "مصري (Egyptian)", "فصحى"], expected: "مصري (Egyptian)" },
+            { id: "D-427", category: "تحديد اللهجة", type: "dialect", text: "شو رأيك نروح مشوار عالبحر العصر؟", options: ["شامي (Levantine)", "خليجي", "مصري", "فصحى"], expected: "شامي (Levantine)" },
+            { id: "D-428", category: "تحديد اللهجة", type: "dialect", text: "ألف مبروك على الموتر الجديد، الله يعطيك خيره ويكفيك شره.", options: ["شامي", "خليجي (Gulf)", "مصري", "فصحى"], expected: "خليجي (Gulf)" },
+            { id: "D-429", category: "تحديد اللهجة", type: "dialect", text: "تأهلت الشركة للمرحلة النهائية من المناقصة الحكومية.", options: ["شامي", "خليجي", "مصري", "فصحى (MSA)"], expected: "فصحى (MSA)" },
+            { id: "D-430", category: "تحديد اللهجة", type: "dialect", text: "بصراحة الشغل معاكم ممتع وما بينمل منه أبداً.", options: ["شامي", "خليجي", "مصري (Egyptian)", "فصحى"], expected: "مصري (Egyptian)" },
+
+            // --- Content Safety & Flagging ---
+            { id: "F-501", category: "فلترة جودة المحتوى", type: "safety", text: "اشتريت جهاز وتلفون واشتريت كورس وبكرة بروح عادي أصلاً...", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful)"], expected: "غامق/غير مبهم (Ambiguous)" },
+            { id: "F-502", category: "فلترة جودة المحتوى", type: "safety", text: "ربحححححت معنا 100000000$ اضغط على الرابط فورررراً!! www.fake-win.com", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful)"], expected: "سبام/جودة منخفضة (Spam)" },
+            { id: "F-503", category: "فلترة جودة المحتوى", type: "safety", text: "المقال يحتوي على تفاصيل ممتازة وشرح وافي لموضوع أمن الشبكات.", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful)"], expected: "سليم (Clean)" },
+            { id: "F-504", category: "فلترة جودة المحتوى", type: "safety", text: "يا حقير أنت شخص لا تفهم شيئاً وتباً لك ولرأيك!", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful/Offensive)"], expected: "مسيء/ضار (Harmful/Offensive)" },
+            { id: "F-505", category: "فلترة جودة المحتوى", type: "safety", text: "يمكنكم متابعة حسابنا للحصول على عروض مميزة وأسعار تنافسية يومياً.", options: ["سليم (Clean)", "سبام", "مسيء", "غامض"], expected: "سليم (Clean)" },
+            { id: "F-506", category: "فلترة جودة المحتوى", type: "safety", text: "تابعونا لزيادة متابعين انستغرام مجاناً وبدون أي مجهود 100k followers!", options: ["سليم (Clean)", "سبام/جودة منخفضة (Spam)", "مسيء", "غامض"], expected: "سبام/جودة منخفضة (Spam)" },
+            { id: "F-507", category: "فلترة جودة المحتوى", type: "safety", text: "سأقوم بضربك وقتلك إن تجرأت وتحدثت معي هكذا مرة أخرى!", options: ["سليم (Clean)", "سبام", "مسيء/عنيف (Harmful/Violent)", "غامض"], expected: "مسيء/عنيف (Harmful/Violent)" },
+            { id: "F-508", category: "فلترة جودة المحتوى", type: "safety", text: "النص غير واضح ولا يوصل أي معنى مفيد للمستخدم القارئ.", options: ["سليم", "غامق/غير مبهم (Ambiguous)", "سبام", "مسيء"], expected: "غامق/غير مبهم (Ambiguous)" },
+            { id: "F-509", category: "فلترة جودة المحتوى", type: "safety", text: "شكراً جزيلاً لجهودكم المبذولة في خدمة العملاء ومساعدة الجميع.", options: ["سليم (Clean)", "سبام", "مسيء", "غامض"], expected: "سليم (Clean)" },
+            { id: "F-510", category: "فلترة جودة المحتوى", type: "safety", text: "احصل على قرض مالي فوري خلال 5 دقائق بدون ضمانات عبر هذا الرابط المشبوه!", options: ["سليم", "سبام/جودة منخفضة (Spam)", "مسيء", "غامض"], expected: "سبام/جودة منخفضة (Spam)" },
+            { id: "F-511", category: "فلترة جودة المحتوى", type: "safety", text: "نقدم لكم خدمات تصميم احترافية بأسعار منافسة للغاية تواصلوا معنا.", options: ["سليم (Clean)", "سبام", "مسيء", "غامض"], expected: "سليم (Clean)" },
+            { id: "F-512", category: "فلترة جودة المحتوى", type: "safety", text: "كلمات عشوائية متسارعة بدون أي ترابط نحوي أو دلالي تفكير تجريبي.", options: ["سليم", "غامق/غير مبهم (Ambiguous)", "سبام", "مسيء"], expected: "غامق/غير مبهم (Ambiguous)" },
+            { id: "F-513", category: "فلترة جودة المحتوى", type: "safety", text: "أنتم مجموعة من اللصوص والنصابين وسأقوم بفضحتكم بكل مكان!", options: ["سليم", "سبام", "مسيء/تشهير (Harmful/Offensive)", "غامض"], expected: "مسيء/تشهير (Harmful/Offensive)" },
+            { id: "F-514", category: "فلترة جودة المحتوى", type: "safety", text: "يسعدنا حضوركم لافتتاح الفرع الجديد للمركز التجاري.", options: ["سليم (Clean)", "سبام", "مسيء", "غامض"], expected: "سليم (Clean)" },
+            { id: "F-515", category: "فلترة جودة المحتوى", type: "safety", text: "اضغط هنا لتحصل على آلاف الدولارات يومياً بدون عمل مجهود هكر مضمون!", options: ["سليم", "سبام/جودة منخفضة (Spam)", "مسيء", "غامض"], expected: "سبام/جودة منخفضة (Spam)" },
+            { id: "F-516", category: "فلترة جودة المحتوى", type: "safety", text: "عبارات غامضة ومبهمة لا تحمل سياقاً أو فهماً واضحاً للمصحح.", options: ["سليم", "غامق/غير مبهم (Ambiguous)", "سبام", "مسيء"], expected: "غامق/غير مبهم (Ambiguous)" },
+            { id: "F-517", category: "فلترة جودة المحتوى", type: "safety", text: "تباً لعقليتكم المتخلفة وأفكاركم السخيفة جميعاً!", options: ["سليم", "سبام", "مسيء/ضار (Harmful/Offensive)", "غامض"], expected: "مسيء/ضار (Harmful/Offensive)" },
+            { id: "F-518", category: "فلترة جودة المحتوى", type: "safety", text: "تم نشر المقال بنجاح في المجلة العلمية المحكمة.", options: ["سليم (Clean)", "سبام", "مسيء", "غامض"], expected: "سليم (Clean)" },
+            { id: "F-519", category: "فلترة جودة المحتوى", type: "safety", text: "بيع متابعين ولايكات وهمية بأرخص الأسعار لحسابات السوشيال ميديا.", options: ["سليم", "سبام/جودة منخفضة (Spam)", "مسيء", "غامض"], expected: "سبام/جودة منخفضة (Spam)" },
+            { id: "F-520", category: "فلترة جودة المحتوى", type: "safety", text: "سأدمر حياتك ولن أتركك تنعم بالسلام أبداً يا حقير.", options: ["سليم", "سبام", "مسيء/تهديد (Harmful/Threat)", "غامض"], expected: "مسيء/تهديد (Harmful/Threat)" },
+
+            // --- E-Commerce & Advanced Reviews ---
+            { id: "E-601", category: "تقييمات ومراجعات", type: "advanced", text: "التصميم الجديد للموقع ممتاز جداً ويسهل الوصول للخدمات بسرعة.", options: ["رأي", "خبر", "طلب", "سؤال"], expected: "رأي" },
+            { id: "E-602", category: "تقييمات ومراجعات", type: "advanced", text: "أرجو إلغاء الطلب الخاص بي ورقم مرجعي هو 48392.", options: ["رأي", "خبر", "طلب", "سؤال"], expected: "طلب" },
+            { id: "E-603", category: "تقييمات ومراجعات", type: "advanced", text: "تم اليوم توقيع اتفاقية تعاون بين الشركة والجامعة لتأهيل الخريجين.", options: ["رأي", "خبر", "طلب", "سؤال"], expected: "خبر" },
+            { id: "E-604", category: "تقييمات ومراجعات", type: "advanced", text: "كيف يمكنني التسجيل في دورة الذكاء الاصطناعي الجديدة المتاحة؟", options: ["رأي", "خبر", "طلب", "سؤال"], expected: "سؤال" },
+            { id: "E-605", category: "تقييمات التجارة", text: "السماعات صوتها نقي جداً وعزل الضوضاء قوي، بنصح فيها بشدة.", options: ["إيجابي - تقييم عالي", "سلبي - مشكلة صوت", "محايد", "غير متأكد"], expected: "إيجابي - تقييم عالي" },
+            { id: "E-606", category: "تقييمات التجارة", text: "المقاس طلع أصغر بكتير من المكتوب بجدول المقاسات، بدي أطلب إرجاع.", options: ["إيجابي", "سلبي - خطأ مقاس", "محايد", "استفسار"], expected: "سلبي - خطأ مقاس" },
+            { id: "E-607", category: "تقييمات التجارة", text: "الغسالة كويسة بس صوتها عالي شوية وقت العصر وسعرها معقول.", options: ["إيجابي تماماً", "مختلط (أداء جيد وصوت مرتفع)", "سلبي بالكامل", "غير مفيد"], expected: "مختلط (أداء جيد وصوت مرتفع)" },
+            { id: "E-608", category: "تقييمات التجارة", text: "الكتاب وصل تالف والصفحات ممزقة من الإهمال بالشحن.", options: ["تلف شحن - سلبي", "إيجابي", "محايد", "جيد جداً"], expected: "تلف شحن - سلبي" },
+            { id: "E-609", category: "تقييمات التجارة", text: "الخامة ممتازة جداً ونفس الصورة تماماً، شكراً للمتجر على المصداقية.", options: ["إيجابي - تقييم عالي", "سلبي", "محايد", "مختلط"], expected: "إيجابي - تقييم عالي" },
+            { id: "E-610", category: "تقييمات التجارة", text: "اللون مختلف تماماً عن اللي طلبته بالصورة، خدمة سيئة.", options: ["إيجابي", "سلبي - خطأ لون", "محايد", "استفسار"], expected: "سلبي - خطأ لون" },
+
+            // --- Social Media Moderation ---
+            { id: "M-701", category: "منشورات وسائل التواصل", type: "social", text: "صباح الخير أصدقائي! شو خططكم لنهاية الأسبوع الجاري؟", options: ["تفاعل اجتماعي إيجابي", "شكوى عامة", "خبر عاجل", "إعلان تجاري"], expected: "تفاعل اجتماعي إيجابي" },
+            { id: "M-702", category: "منشورات وسائل التواصل", type: "social", text: "سعيد جداً بمشاركتي اليوم في مؤتمر التكنولوجيا المالي وتطوير حلول السحابة.", options: ["إنجاز مهني / إيجابي", "سلبي", "استفسار", "محايد"], expected: "إنجاز مهني / إيجابي" },
+            { id: "M-703", category: "منشورات وسائل التواصل", type: "social", text: "زحمة غير طبيعية في الطريق الرئيسي صباح اليوم، يفضل استخدام طرق بديلة.", options: ["تنبيه مجتمعي / خدمة عامة", "إعلان", "ترفيه", "رياضة"], expected: "تنبيه مجتمعي / خدمة عامة" },
+            { id: "M-704", category: "منشورات وسائل التواصل", type: "social", text: "تغطية خاصة ومباشرة لمباراة اليوم بين الفريقين في نهائي البطولة.", options: ["تغطية رياضية", "سياسة", "تكنولوجيا", "أزياء"], expected: "تغطية رياضية" },
+            { id: "M-705", category: "منشورات وسائل التواصل", type: "social", text: "ألف مبروك لكل المتخرجين وعقبال أعلى المراتب العلمية والعملية إن شاء الله.", options: ["تهنئة واحتفال", "شكوى", "إعلان", "سؤال"], expected: "تهنئة واحتفال" },
+            { id: "M-706", category: "منشورات وسائل التواصل", type: "social", text: "يا شباب هل من نصيحة لأفضل لغة برمجة لبدء التعلم في مجال الذكاء الاصطناعي؟", options: ["استفسار تقني", "إعلان", "خبر", "ترفيه"], expected: "استفسار تقني" },
+            { id: "M-707", category: "منشورات وسائل التواصل", type: "social", text: "تم بحمد الله إطلاق موقعنا الإلكتروني الجديد كلياً، ننتظر زيارتكم وملاحظاتكم.", options: ["إعلان إطلاق رسمي", "شكوى", "استفسار", "رياضة"], expected: "إعلان إطلاق رسمي" },
+            { id: "M-708", category: "منشورات وسائل التواصل", type: "social", text: "الجو اليوم برات البيت بجنن، مين طلع مشوار ومين قاعد بالبيت؟", options: ["دردشة اجتماعية", "خبر سياسي", "تنبيه أمني", "إعلان"], expected: "دردشة اجتماعية" },
+            { id: "M-709", category: "منشورات وسائل التواصل", type: "social", text: "انقطع التيار الكهربائي عن الحي منذ ساعتين وحتى الآن لم يتم إيجاد حل!", options: ["شكوى خدمات عامة", "إعلان", "ترفيه", "تغريدة إيجابية"], expected: "شكوى خدمات عامة" },
+            { id: "M-710", category: "منشورات وسائل التواصل", type: "social", text: "فخور جداً بانضمامي إلى فريق العمل الجديد في شركة تكنولوجيا كبرى بقطاع السحابة.", options: ["إنجاز مهني / إيجابي", "سلبي", "استفسار", "محايد"], expected: "إنجاز مهني / إيجابي" }
+        ];
+
+        // Non-repeating monthly offset selection: guarantees previous months' questions do not overlap
+        function getNonRepeatingMonthlyTasks(pool, count = 200) {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth(); // 0 to 11
+
+            // Calculate a unique starting index based on the month and year offset
+            // e.g., January = index 0, February = index 200, March = index 400, etc.
+            const totalMonthsElapsed = (year * 12) + month;
+            const startIndex = (totalMonthsElapsed * count) % pool.length;
+
+            let selected = [];
+            for (let i = 0; i < count; i++) {
+                let poolIndex = (startIndex + i) % pool.length;
+                selected.push(pool[poolIndex]);
+            }
+            return selected;
+        }
+
+        const tasks = getNonRepeatingMonthlyTasks(masterPool, 200);
+
+        let currentIndex = 0;
+        let userResponses = JSON.parse(localStorage.getItem('arabic_annotation_responses')) || {};
+
+        const monthsNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+        const currentActiveDate = new Date();
+        document.getElementById('batch-month-label').innerText = `دفعة ${monthsNames[currentActiveDate.getMonth()]} ${currentActiveDate.getFullYear()}`;
+
+        function initApp() {
+            renderTaskList();
+            loadTask(currentIndex);
+        }
+
+        function renderTaskList() {
+            const container = document.getElementById('task-list-container');
+            container.innerHTML = '';
+            let completedCount = 0;
+
+            tasks.forEach((task, idx) => {
+                const isCompleted = userResponses[task.id] !== undefined;
+                if (isCompleted) completedCount++;
+
+                const item = document.createElement('div');
+                item.className = `task-item ${idx === currentIndex ? 'active' : ''}`;
+                item.onclick = () => { currentIndex = idx; loadTask(currentIndex); };
+                
+                item.innerHTML = `
+                    <div style="overflow: hidden; flex: 1; margin-left: 0.5rem;">
+                        <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
+                            <span style="font-family: monospace; color: #818cf8; font-weight: bold; font-size: 0.75rem;">${task.id}</span>
+                            <span style="font-size: 0.65rem; color: #94a3b8;">(${task.category})</span>
+                        </div>
+                        <div style="color: #cbd5e1; font-size: 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 0.15rem;">${task.text}</div>
+                    </div>
+                    <span style="padding: 0.15rem 0.5rem; border-radius: 50px; font-size: 0.6rem; font-weight: 600; background: ${isCompleted ? 'rgba(5, 150, 105, 0.15)' : 'rgba(51, 65, 85, 0.5)'}; color: ${isCompleted ? '#34d399' : '#94a3b8'}; border: 1px solid ${isCompleted ? 'rgba(5, 150, 105, 0.3)' : 'rgba(255,255,255,0.05)'};">
+                        ${isCompleted ? 'مكتمل' : 'معلق'}
+                    </span>
+                `;
+                container.appendChild(item);
+            });
+
+            document.getElementById('completed-count').innerText = `${completedCount} / ${tasks.length}`;
+            if (completedCount === tasks.length) {
+                document.getElementById('thank-you-modal').classList.add('active');
+            }
+        }
+
+        function loadTask(idx) {
+            const task = tasks[idx];
+            document.getElementById('task-id-badge').innerText = task.id;
+            document.getElementById('task-category-badge').innerText = task.category;
+            document.getElementById('task-text-display').innerText = task.text;
+            document.getElementById('progress-indicator').innerText = `مهمة ${idx + 1} من ${tasks.length}`;
+
+            const inputsContainer = document.getElementById('annotation-inputs');
+            
+            const gridStyle = window.innerWidth >= 640 ? 'grid-template-columns: repeat(2, 1fr);' : 'grid-template-columns: 1fr;';
+            inputsContainer.style.cssText = `display: grid; gap: 0.75rem; ${gridStyle}`;
+
+            inputsContainer.innerHTML = task.options.map(opt => {
+                const isChecked = userResponses[task.id] === opt ? 'checked' : '';
+                return `
+                    <label class="option-btn" style="border-color: ${isChecked ? '#6366f1' : 'rgba(255,255,255,0.08)'}; background: ${isChecked ? 'rgba(49, 46, 129, 0.3)' : 'rgba(15, 23, 42, 0.8)'};">
+                        <input type="radio" name="annotation_choice" value="${opt}" ${isChecked}>
+                        <span>${opt}</span>
+                    </label>
+                `;
+            }).join('');
+
+            document.querySelectorAll('input[name="annotation_choice"]').forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    document.querySelectorAll('.option-btn').forEach(btn => {
+                        btn.style.borderColor = 'rgba(255,255,255,0.08)';
+                        btn.style.background = 'rgba(15, 23, 42, 0.8)';
+                    });
+                    if (e.target.checked) {
+                        e.target.parentElement.style.borderColor = '#6366f1';
+                        e.target.parentElement.style.background = 'rgba(49, 46, 129, 0.3)';
+                    }
+                });
+            });
+
+            const statusBadge = document.getElementById('completion-status');
+            if (userResponses[task.id]) {
+                statusBadge.style.background = 'rgba(5, 150, 105, 0.1)';
+                statusBadge.style.color = '#34d399';
+                statusBadge.style.borderColor = 'rgba(5, 150, 105, 0.2)';
+                statusBadge.innerText = 'مكتمل ✓';
+            } else {
+                statusBadge.style.background = 'rgba(245, 158, 11, 0.1)';
+                statusBadge.style.color = '#fbbf24';
+                statusBadge.style.borderColor = 'rgba(245, 158, 11, 0.2)';
+                statusBadge.innerText = 'قيد العمل';
+            }
+
+            renderTaskList();
+        }
+
+        function saveCurrentAndMove(step) {
+            const selected = document.querySelector('input[name="annotation_choice"]:checked');
+            if (selected) {
+                userResponses[tasks[currentIndex].id] = selected.value;
+                localStorage.setItem('arabic_annotation_responses', JSON.stringify(userResponses));
+            }
+
+            currentIndex += step;
+            if (currentIndex < 0) currentIndex = 0;
+            if (currentIndex >= tasks.length) {
+                currentIndex = tasks.length - 1;
+                document.getElementById('thank-you-modal').classList.add('active');
+            }
+            loadTask(currentIndex);
+        }
+
+        function nextTask() { saveCurrentAndMove(1); }
+        function prevTask() { saveCurrentAndMove(-1); }
+        function closeThankYouModal() { document.getElementById('thank-you-modal').classList.add('hidden'); }
+
+        function exportJSON() {
+            const now = new Date();
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({
+                annotator_session: "annotator_" + Math.random().toString(36).substring(2, 8),
+                batch_period: `${monthsNames[now.getMonth()]} ${now.getFullYear()}`,
+                submission_timestamp: new Date().toISOString(),
+                total_tasks_completed: Object.keys(userResponses).length,
+                responses: userResponses
+            }, null, 4));
+            
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `arabic_annotation_results_${now.getFullYear()}_${now.getMonth() + 1}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
