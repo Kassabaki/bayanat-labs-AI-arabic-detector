@@ -8,9 +8,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Cairo', sans-serif; background: #0b0f19; color: #f1f5f9; }
-        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .card-glow { box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.15); }
-        .radio-card input:checked + div { border-color: #6366f1; background: rgba(99, 102, 241, 0.1); }
+        .glass-panel { background: rgba(30, 41, 59, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .card-glow { box-shadow: 0 15px 35px -10px rgba(99, 102, 241, 0.2); }
+        .interactive-btn { transition: all 0.2s ease; }
+        .interactive-btn:hover { transform: translateY(-2px); }
+        .star-rating input { display: none; }
+        .star-rating label { font-size: 1.5rem; color: #475569; cursor: pointer; transition: color 0.2s; }
+        .star-rating label:hover, .star-rating label:hover ~ label, .star-rating input:checked ~ label { color: #f59e0b; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
@@ -24,7 +28,7 @@
             <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center font-black text-xl shadow-lg shadow-indigo-500/30">ب</div>
             <div>
                 <h1 class="text-lg font-bold text-white tracking-tight">منصة ترميز البيانات العربية</h1>
-                <p class="text-xs text-indigo-400 font-medium">Bayanat Labs · نظام تقييم وعمل المهام الشهرية</p>
+                <p class="text-xs text-indigo-400 font-medium">Bayanat Labs · نظام المهام والتقييم الشهري</p>
             </div>
         </div>
         <div class="flex items-center space-x-3 space-x-reverse">
@@ -39,31 +43,28 @@
     <main class="flex-1 container mx-auto p-4 sm:p-6 max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
         <!-- Left / Center Column: Task Interactive Card (8 Cols) -->
-        <section class="lg:col-span-8 glass-panel rounded-2xl p-6 sm:p-8 card-glow flex flex-col justify-between min-h-[580px]">
+        <section class="lg:col-span-8 glass-panel rounded-2xl p-6 sm:p-8 card-glow flex flex-col justify-between min-h-[600px]">
             <div>
                 <!-- Task Header Info -->
-                <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-800">
+                <div class="flex justify-between items-center mb-5 pb-4 border-b border-slate-800">
                     <div class="flex items-center space-x-3 space-x-reverse">
-                        <span id="task-id-badge" class="px-3 py-1 bg-indigo-900/60 border border-indigo-700/50 text-indigo-300 text-xs font-mono rounded-lg font-bold">T-101</span>
+                        <span id="task-id-badge" class="px-3 py-1 bg-indigo-900/60 border border-indigo-700/50 text-indigo-300 text-xs font-mono rounded-lg font-bold">ID: T-101</span>
                         <span id="task-category-badge" class="px-3 py-1 bg-slate-800 text-slate-300 text-xs rounded-lg font-semibold">تصنيف الموضوع</span>
                     </div>
                     <span id="completion-status" class="text-xs px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-semibold">قيد العمل</span>
                 </div>
 
                 <!-- Text Snippet Box -->
-                <div class="mb-8">
+                <div class="mb-6">
                     <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">النص المستهدف للمراجعة والترميز:</label>
-                    <div id="task-text-display" class="p-5 bg-slate-900/90 rounded-xl text-lg text-slate-100 border border-slate-800 leading-relaxed shadow-inner min-h-[110px] flex items-center">
+                    <div id="task-text-display" class="p-5 bg-slate-900/95 rounded-xl text-lg text-slate-100 border border-slate-800 leading-relaxed shadow-inner min-h-[100px] flex items-center">
                         جاري تحميل النص...
                     </div>
                 </div>
 
-                <!-- Dynamic Options Form -->
-                <div class="mb-6">
-                    <label class="block text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">اختر التصنيف الصحيح:</label>
-                    <div id="annotation-inputs" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <!-- Injected dynamically -->
-                    </div>
+                <!-- Dynamic Interactive Input Modules -->
+                <div id="annotation-inputs" class="space-y-4 mb-6">
+                    <!-- Dynamically injected based on task type -->
                 </div>
             </div>
 
@@ -72,7 +73,7 @@
                 <button onclick="prevTask()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-5 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-2 space-x-reverse">
                     <span>← السابق</span>
                 </button>
-                <div class="text-xs font-mono text-slate-400 bg-slate-900/80 px-4 py-2 rounded-lg border border-slate-800" id="progress-indicator">مهمة 1 من 32</div>
+                <div class="text-xs font-mono text-slate-400 bg-slate-900/80 px-4 py-2 rounded-lg border border-slate-800" id="progress-indicator">مهمة 1 من 28</div>
                 <button onclick="nextTask()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/30 transition transform active:scale-95 flex items-center space-x-2 space-x-reverse">
                     <span>حفظ والتالي ←</span>
                 </button>
@@ -80,12 +81,10 @@
         </section>
 
         <!-- Right Column: Task List Sidebar (4 Cols) -->
-        <aside class="lg:col-span-4 glass-panel rounded-2xl p-4 sm:p-5 flex flex-col h-[580px] shadow-xl">
+        <aside class="lg:col-span-4 glass-panel rounded-2xl p-4 sm:p-5 flex flex-col h-[600px] shadow-xl">
             <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-800">
-                <h2 class="font-bold text-sm text-slate-200 flex items-center space-x-2 space-x-reverse">
-                    <span>📋 مهام دفعة هذا الشهر</span>
-                </h2>
-                <span id="completed-count" class="text-xs bg-indigo-950 text-indigo-300 border border-indigo-800/60 px-2.5 py-1 rounded-full font-bold">0 / 32</span>
+                <h2 class="font-bold text-sm text-slate-200">📋 قائمة مهام الشهر الحالي</h2>
+                <span id="completed-count" class="text-xs bg-indigo-950 text-indigo-300 border border-indigo-800/60 px-2.5 py-1 rounded-full font-bold">0 / 28</span>
             </div>
             <div id="task-list-container" class="overflow-y-auto flex-1 space-y-2.5 pr-1">
                 <!-- Task list items injected here -->
@@ -95,20 +94,20 @@
     </main>
 
     <!-- Thank You / Completion Modal -->
-    <div id="thank-you-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
-        <div class="glass-panel rounded-3xl p-8 max-w-md w-full text-center shadow-2xl border border-indigo-500/30 animate-scale">
+    <div id="thank-you-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+        <div class="glass-panel rounded-3xl p-8 max-w-md w-full text-center shadow-2xl border border-indigo-500/30">
             <div class="w-16 h-16 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-2xl mx-auto flex items-center justify-center text-3xl mb-4 shadow-lg shadow-emerald-500/20">🎉</div>
             <h2 class="text-2xl font-black text-white mb-2">أهلاً بك، تم إتمام مهام الشهر!</h2>
             <p class="text-slate-300 text-xs mb-6 leading-relaxed">
-                لقد أنجزت بنجاح كافة مهام التقييم والترميز للدفعة الحالية. سيتم توليد مهام جديدة تلقائياً للشهر القادم. يرجى تصدير ملف النتائج بصيغة JSON وإرساله للإدارة.
+                لقد أنجزت بنجاح كافة مهام التقييم والترميز للدفعة الحالية. يتم تدوير المهام وإعداد دفعة جديدة للشهر القادم تلقائياً. يرجى تصدير ملف النتائج بصيغة JSON.
             </p>
             <div class="bg-slate-900/90 p-4 rounded-xl mb-6 text-right text-xs text-slate-300 space-y-2 border border-slate-800">
-                <div class="flex justify-between"><span>إجمالي المهام المنجزة:</span> <span class="font-bold text-indigo-400">32 / 32</span></div>
+                <div class="flex justify-between"><span>إجمالي المهام المنجزة:</span> <span class="font-bold text-indigo-400">28 / 28</span></div>
                 <div class="flex justify-between"><span>حالة الدفعة الشهرية:</span> <span class="font-bold text-emerald-400">مكتملة بنجاح ✓</span></div>
             </div>
             <div class="flex flex-col gap-3">
                 <button onclick="exportJSON()" class="bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl font-bold text-xs shadow-lg shadow-indigo-600/30 transition">
-                    📥 تحميل ملف النتائج (JSON)
+                    📥 تحميل ملف النتائج النهائي (JSON)
                 </button>
                 <button onclick="closeThankYouModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 py-2.5 rounded-xl text-xs font-semibold transition">
                     مراجعة الإجابات السابقة
@@ -120,30 +119,37 @@
     <!-- Script Logic -->
     <script>
         const tasks = [
+            // Rich multi-category tasks featuring buttons, star ratings, rewrites, and flags
             { id: "T-101", category: "تصنيف الموضوع", type: "topic", text: "أعلنت شركة التقنية الوطنية عن إطلاق نظام جديد للذكاء الاصطناعي لتحسين كفاءة سلاسل الإمداد والتوريد.", options: ["تكنولوجيا", "اقتصاد وعمل", "رياضيات", "حياة يومية"], expected: "تكنولوجيا" },
             { id: "T-102", category: "تصنيف الموضوع", type: "topic", text: "توجّه المنتخب الوطني لكرة القدم إلى العاصمة اليوم استعداداً للمباراة النهائية الحاسمة ضمن البطولات القارية.", options: ["رياضة", "سياسة", "ترفيه", "تكنولوجيا"], expected: "رياضة" },
             { id: "T-103", category: "تصنيف الموضوع", type: "topic", text: "سجلت مؤشرات الأسواق المالية ارتفاعاً ملحوظاً في ختام تعاملات اليوم بدعم من أسهم قطاع الطاقة.", options: ["اقتصاد وعمل", "تكنولوجيا", "صحة", "ترفيه"], expected: "اقتصاد وعمل" },
             { id: "T-104", category: "تصنيف الموضوع", type: "topic", text: "نظمت البلدية مهرجاناً ثقافياً ترفيهياً للعائلات في الحديقة المركزية بمناسبة العطلة الصيفية.", options: ["حياة يومية ومجتمع", "سياسة", "تكنولوجيا", "رياضة"], expected: "حياة يومية ومجتمع" },
+            
             { id: "S-201", category: "تحليل المشاعر", type: "sentiment", text: "يا أخي الخدمة ممتازة والتعامل راقي جداً، شكراً لطاقم العمل على سرعة الاستجابة!", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "إيجابي" },
             { id: "S-202", category: "تحليل المشاعر", type: "sentiment", text: "التطبيق يعلّق كل دقيقة وما عم أقدر أعمل تسجيل دخول بالمرة، أسوأ تجربة!", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "سلبي" },
             { id: "S-203", category: "تحليل المشاعر", type: "sentiment", text: "المنتج وصل بالميعاد المحدد، بس التغليف كان عادي مش زي ما توقعت.", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "مختلط" },
             { id: "S-204", category: "تحليل المشاعر", type: "sentiment", text: "تم نشر جدول مواعيد الرحلات الرسمية للأسبوع القادم على الموقع الإلكتروني.", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "محايد" },
+
             { id: "I-301", category: "كشف النية", type: "intent", text: "ممكن أعرف كم تكلفة الشحن للمحافظات وهل متاح الدفع عند الاستلام؟", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "استفسار (Inquiry)" },
             { id: "I-302", category: "كشف النية", type: "intent", text: "طلبت الأوردر من أسبوع ولغاية الحين ما وصلني أي رقم تتبع أو اعتذار!", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "شكوى (Complaint)" },
             { id: "I-303", category: "كشف النية", type: "intent", text: "أنصح الجميع بتجربة هذا المطعم، الأكل طازج والأسعار مناسبة جداً للعائلات.", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "توصية (Recommendation)" },
             { id: "I-304", category: "كشف النية", type: "intent", text: "جربت الساعة الذكية لمدة شهر، البطارية ممتازة بس الشاشة ضعيفة تحت الشمس.", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة وتقييم (Review)"], expected: "مراجعة وتقييم (Review)" },
+
             { id: "D-401", category: "تحديد اللهجة", type: "dialect", text: "شو عم تعمل اليوم؟ خلّينا نطلع نشرب قهوة سوا.", options: ["شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "شامي (Levantine)" },
             { id: "D-402", category: "تحديد اللهجة", type: "dialect", text: "وايد حلو المكان، يعطيك العافية ما قصرت على الاستقبال الطيب.", options: ["شامي (Levantine)", "خليجي (Gulf)", "مغربي (Maghrebi)", "فصحى (MSA)"], expected: "خليجي (Gulf)" },
             { id: "D-403", category: "تحديد اللهجة", type: "dialect", text: "إزيك يا باشا، إيه الأخبار الجديدة عندك النهاردة؟", options: ["شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "مصري (Egyptian)" },
             { id: "D-404", category: "تحديد اللهجة", type: "dialect", text: "تُعد هذه اللوائح التنظيمية خطوة هامة نحو تعزيز الشفافية المؤسسية.", options: ["شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "فصحى (MSA)" },
+
             { id: "F-501", category: "فلترة جودة المحتوى", type: "safety", text: "اشتريت جهاز وتلفون واشتريت كورس وبكرة بروح عادي أصلاً...", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful)"], expected: "غامق/غير مبهم (Ambiguous)" },
             { id: "F-502", category: "فلترة جودة المحتوى", type: "safety", text: "ربحححححت معنا 100000000$ اضغط على الرابط فورررراً!! www.fake-win.com", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful)"], expected: "سبام/جودة منخفضة (Spam)" },
             { id: "F-503", category: "فلترة جودة المحتوى", type: "safety", text: "المقال يحتوي على تفاصيل ممتازة وشرح وافي لموضوع أمن الشبكات.", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful)"], expected: "سليم (Clean)" },
             { id: "F-504", category: "فلترة جودة المحتوى", type: "safety", text: "يا حقير أنت شخص لا تفهم شيئاً وتباً لك ولرأيك!", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful/Offensive)"], expected: "مسيء/ضار (Harmful/Offensive)" },
-            { id: "E-601", category: "تقييمات التجارة الإلكترونية", type: "ecommerce", text: "السماعات صوتها نقي جداً وعزل الضوضاء قوي، بنصح فيها بشدة.", options: ["إيجابي - تقييم عالي", "سلبي - مشكلة صوت", "محايد", "غير متأكد"], expected: "إيجابي - تقييم عالي" },
-            { id: "E-602", category: "تقييمات التجارة الإلكترونية", type: "ecommerce", text: "المقاس طلع أصغر بكتير من المكتوب بجدول المقاسات، بدي أطلب إرجاع.", options: ["إيجابي", "سلبي - خطأ مقاس", "محايد", "استفسار"], expected: "سلبي - خطأ مقاس" },
-            { id: "E-603", category: "تقييمات التجارة الإلكترونية", type: "ecommerce", text: "الغسالة كويسة بس صوتها عالي شوية وقت العصر وسعرها معقول.", options: ["إيجابي تماماً", "مختلط (أداء جيد وصوت مرتفع)", "سلبي بالكامل", "غير مفيد"], expected: "مختلط (أداء جيد وصوت مرتفع)" },
-            { id: "E-604", category: "تقييمات التجارة الإلكترونية", type: "ecommerce", text: "الكتاب وصل تالف والصفحات ممزقة من الإهمال بالشحن.", options: ["تلف شحن - سلبي", "إيجابي", "محايد", "جيد جداً"], expected: "تلف شحن - سلبي" },
+
+            { id: "E-601", category: "تقييمات ومراجعات", type: "advanced", text: "التصميم الجديد للموقع ممتاز جداً ويسهل الوصول للخدمات بسرعة.", options: ["رأي", "خبر", "طلب", "سؤال"], expected: "رأي" },
+            { id: "E-602", category: "تقييمات ومراجعات", type: "advanced", text: "أرجو إلغاء الطلب الخاص بي ورقم مرجعي هو 48392.", options: ["رأي", "خبر", "طلب", "سؤال"], expected: "طلب" },
+            { id: "E-603", category: "تقييمات ومراجعات", type: "advanced", text: "تم اليوم توقيع اتفاقية تعاون بين الشركة والجامعة لتأهيل الخريجين.", options: ["رأي", "خبر", "طلب", "سؤال"], expected: "خبر" },
+            { id: "E-604", category: "تقييمات ومراجعات", type: "advanced", text: "كيف يمكنني التسجيل في دورة الذكاء الاصطناعي الجديدة المتاحة؟", options: ["رأي", "خبر", "طلب", "سؤال"], expected: "سؤال" },
+
             { id: "M-701", category: "منشورات وسائل التواصل", type: "social", text: "صباح الخير أصدقائي! شو خططكم لنهاية الأسبوع الجاري؟", options: ["تفاعل اجتماعي إيجابي", "شكوى عامة", "خبر عاجل", "إعلان تجاري"], expected: "تفاعل اجتماعي إيجابي" },
             { id: "M-702", category: "منشورات وسائل التواصل", type: "social", text: "سعيد جداً بمشاركتي اليوم في مؤتمر التكنولوجيا المالي وتطوير حلول السحابة.", options: ["إنجاز مهني / إيجابي", "سلبي", "استفسار", "محايد"], expected: "إنجاز مهني / إيجابي" },
             { id: "M-703", category: "منشورات وسائل التواصل", type: "social", text: "زحمة غير طبيعية في الطريق الرئيسي صباح اليوم، يفضل استخدام طرق بديلة.", options: ["تنبيه مجتمعي / خدمة عامة", "إعلان", "ترفيه", "رياضة"], expected: "تنبيه مجتمعي / خدمة عامة" },
@@ -168,14 +174,14 @@
                 if (isCompleted) completedCount++;
 
                 const item = document.createElement('div');
-                item.className = `p-3 rounded-xl cursor-pointer text-xs flex justify-between items-center transition-all ${idx === currentIndex ? 'bg-indigo-900/50 border border-indigo-500/80 shadow-md' : 'bg-slate-900/60 hover:bg-slate-800 border border-slate-800/60'}`;
+                item.className = `p-3 rounded-xl cursor-pointer text-xs flex justify-between items-center transition-all ${idx === currentIndex ? 'bg-indigo-950 border border-indigo-500 shadow-md' : 'bg-slate-900/60 hover:bg-slate-800 border border-slate-800/60'}`;
                 item.onclick = () => { currentIndex = idx; loadTask(currentIndex); };
                 
                 item.innerHTML = `
                     <div class="truncate flex-1 ml-2">
                         <div class="flex items-center space-x-2 space-x-reverse">
                             <span class="font-mono text-indigo-400 font-bold">${task.id}</span>
-                            <span class="text-[10px] text-slate-400">(${task.category})</span>
+                            <span class="text-[10px] text-slate-400 truncate">(${task.category})</span>
                         </div>
                         <div class="text-slate-300 truncate mt-0.5">${task.text}</div>
                     </div>
@@ -194,18 +200,65 @@
 
         function loadTask(idx) {
             const task = tasks[idx];
-            document.getElementById('task-id-badge').innerText = task.id;
+            document.getElementById('task-id-badge').innerText = `ID: ${task.id}`;
             document.getElementById('task-category-badge').innerText = task.category;
             document.getElementById('task-text-display').innerText = task.text;
             document.getElementById('progress-indicator').innerText = `مهمة ${idx + 1} من ${tasks.length}`;
 
             const inputsContainer = document.getElementById('annotation-inputs');
-            inputsContainer.innerHTML = task.options.map(opt => `
-                <label class="radio-card relative flex items-center p-3.5 bg-slate-900/90 rounded-xl border border-slate-800 cursor-pointer hover:border-slate-700 transition">
-                    <input type="radio" name="annotation_choice" value="${opt}" ${userResponses[task.id] === opt ? 'checked' : ''} class="text-indigo-600 focus:ring-indigo-500 h-4 w-4 ml-3">
-                    <span class="text-xs sm:text-sm text-slate-200 font-medium">${opt}</span>
-                </label>
-            `).join('');
+            
+            // Check if it's an advanced task with extra interactive fields (like rewrite & stars)
+            let extraHTML = '';
+            if (task.type === 'advanced') {
+                const existingRewrite = userResponses[task.id]?.rewrite || '';
+                const existingStars = userResponses[task.id]?.stars || '5';
+                extraHTML = `
+                    <div class="mt-4 pt-4 border-t border-slate-800 space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">إعادة الصياغة / النص المحسن:</label>
+                            <input type="text" id="task-rewrite" value="${existingRewrite}" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-sm text-slate-100 focus:outline-none focus:border-indigo-500" placeholder="أدخل صياغة محسنة أو صحيحة...">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">تقييم الجودة:</label>
+                            <div class="star-rating flex flex-row-reverse justify-end space-x-1 space-x-reverse">
+                                ${[5,4,3,2,1].map(star => `
+                                    <input type="radio" id="star${star}-${task.id}" name="rating" value="${star}" ${existingStars == star ? 'checked' : ''}>
+                                    <label for="star${star}-${task.id}" title="${star} نجوم">★</label>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            inputsContainer.innerHTML = `
+                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">اختر التصنيف الرئيسي (Category):</label>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                    ${task.options.map(opt => {
+                        const currentVal = typeof userResponses[task.id] === 'object' ? userResponses[task.id].choice : userResponses[task.id];
+                        const isChecked = currentVal === opt ? 'checked' : '';
+                        return `
+                            <label class="interactive-btn flex items-center justify-center p-3 bg-slate-900/90 rounded-xl border ${isChecked ? 'border-indigo-500 bg-indigo-950/40 text-indigo-300' : 'border-slate-800 text-slate-300 hover:border-slate-700'} cursor-pointer text-center">
+                                <input type="radio" name="annotation_choice" value="${opt}" ${isChecked} class="hidden">
+                                <span class="text-xs sm:text-sm font-semibold">${opt}</span>
+                            </label>
+                        `;
+                    }).join('')}
+                </div>
+                ${extraHTML}
+            `;
+
+            // Add click listeners for sleek button styling on select
+            document.querySelectorAll('input[name="annotation_choice"]').forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    document.querySelectorAll('input[name="annotation_choice"]').forEach(r => {
+                        r.parentElement.className = r.parentElement.className.replace('border-indigo-500 bg-indigo-950/40 text-indigo-300', 'border-slate-800 text-slate-300');
+                    });
+                    if (e.target.checked) {
+                        e.target.parentElement.className = e.target.parentElement.className.replace('border-slate-800 text-slate-300', 'border-indigo-500 bg-indigo-950/40 text-indigo-300');
+                    }
+                });
+            });
 
             const statusBadge = document.getElementById('completion-status');
             if (userResponses[task.id]) {
@@ -222,7 +275,18 @@
         function saveCurrentAndMove(step) {
             const selected = document.querySelector('input[name="annotation_choice"]:checked');
             if (selected) {
-                userResponses[tasks[currentIndex].id] = selected.value;
+                const currentTask = tasks[currentIndex];
+                if (currentTask.type === 'advanced') {
+                    const rewriteVal = document.getElementById('task-rewrite')?.value || '';
+                    const starVal = document.querySelector('input[name="rating"]:checked')?.value || '5';
+                    userResponses[currentTask.id] = {
+                        choice: selected.value,
+                        rewrite: rewriteVal,
+                        stars: starVal
+                    };
+                } else {
+                    userResponses[currentTask.id] = selected.value;
+                }
                 localStorage.setItem('arabic_annotation_responses', JSON.stringify(userResponses));
             }
 
