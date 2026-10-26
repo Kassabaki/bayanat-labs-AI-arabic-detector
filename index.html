@@ -3,295 +3,270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة ترميز البيانات العربية</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <title>منصة ترميز البيانات العربية - لوحة المهام الشهرية</title>
+    <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap');
-        body {
-            font-family: 'Tajawal', sans-serif;
-        }
+        body { font-family: 'Cairo', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .card-bg { background-color: #1e293b; border: 1px solid #334155; }
+        .btn-primary { background-color: #4f46e5; transition: background-color 0.2s; }
+        .btn-primary:hover { background-color: #4338ca; }
+        .active-tab { border-bottom: 3px solid #6366f1; color: #818cf8; font-weight: bold; }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col">
 
     <!-- Header -->
-    <header class="border-b border-slate-800 bg-slate-950/50 backdrop-blur sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="p-2 bg-indigo-600/20 text-indigo-400 rounded-lg border border-indigo-500/30">
-                    <i data-lucide="tag" class="w-6 h-6"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-lg text-white">منصة ترميز البيانات العربية</h1>
-                    <p class="text-xs text-slate-400">نظام التصنيف وإعادة صياغة النصوص للنصوص العربية</p>
-                </div>
-            </div>
-            
-            <div class="flex items-center gap-3">
-                <label class="cursor-pointer bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-lg border border-slate-700 text-sm font-medium transition flex items-center gap-2">
-                    <i data-lucide="upload" class="w-4 h-4"></i>
-                    <span>استيراد JSON</span>
-                    <input type="file" id="importInput" accept=".json" class="hidden" onchange="importData(event)">
-                </label>
-                <button onclick="exportData()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-medium text-sm transition flex items-center gap-2 shadow-lg shadow-indigo-600/20">
-                    <i data-lucide="download" class="w-4 h-4"></i>
-                    <span>تصدير البيانات (JSON)</span>
-                </button>
-            </div>
+    <header class="card-bg shadow-md py-4 px-6 flex justify-between items-center">
+        <div class="flex items-center space-x-4 space-x-reverse">
+            <span class="bg-indigo-600 text-white text-xs px-3 py-1 rounded-full font-semibold" id="current-month-badge">دفعة شهر مايو 2026</span>
+            <h1 class="text-xl font-bold text-white">منصة ترميز البيانات العربية (Bayanat Labs)</h1>
+        </div>
+        <div class="flex space-x-3 space-x-reverse">
+            <button onclick="exportJSON()" class="bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-2 rounded-lg font-semibold flex items-center shadow">
+                📥 تصدير البيانات (JSON)
+            </button>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        <!-- Sidebar Navigation -->
-        <aside class="lg:col-span-4 bg-slate-950/40 border border-slate-800 rounded-xl p-4 flex flex-col h-[calc(100vh-8rem)]">
-            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
-                <span class="text-sm font-semibold text-slate-300">قائمة النصوص (<span id="totalCount">0</span>)</span>
-                <span class="text-xs text-slate-400 bg-slate-800 px-2 py-1 rounded-full" id="progressStatus">مكتمل: 0/0</span>
-            </div>
+    <!-- Main Container -->
+    <main class="flex-1 container mx-auto p-6 max-w-6xl grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            <div id="sampleList" class="flex-1 overflow-y-auto space-y-2 pr-1">
-                <!-- Dynamically populated sample items -->
-            </div>
-        </aside>
-
-        <!-- Annotation Workspace -->
-        <section class="lg:col-span-8 bg-slate-950/40 border border-slate-800 rounded-xl p-6 flex flex-col justify-between">
-            <div class="space-y-6">
-                <!-- Item Header & Badge -->
-                <div class="flex items-center justify-between border-b border-slate-800/80 pb-4">
-                    <span id="itemIdBadge" class="text-xs font-mono text-indigo-400 bg-indigo-950/50 border border-indigo-800/50 px-2.5 py-1 rounded">ID: --</span>
-                    <div id="statusBadge" class="text-xs font-medium px-2.5 py-1 rounded bg-slate-800 text-slate-400">غير مراجع</div>
+        <!-- Left Column: Task Workplace -->
+        <div id="workplace-section" class="lg:col-span-2 card-bg rounded-xl p-6 flex flex-col justify-between shadow-lg">
+            <div>
+                <div class="flex justify-between items-center mb-4">
+                    <span id="task-id-badge" class="text-xs bg-gray-700 text-indigo-300 px-3 py-1 rounded font-mono">ID: task-001</span>
+                    <span id="completion-status" class="text-xs px-3 py-1 rounded-full bg-yellow-900 text-yellow-300 font-semibold">قيد العمل</span>
                 </div>
 
-                <!-- Original Text Display -->
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-2">النص الأصلي</label>
-                    <div id="originalText" class="p-4 bg-slate-900 border border-slate-800 rounded-xl text-lg leading-relaxed text-slate-200 min-h-[100px] select-text">
-                        اختر نصاً من القائمة للبدء في الترميز...
+                <!-- Text Snippet -->
+                <div class="mb-6">
+                    <label class="block text-xs font-semibold text-gray-400 mb-2">النص الأصلي للمراجعة والتصنيف:</label>
+                    <div id="task-text-display" class="p-4 bg-gray-900 rounded-lg text-lg text-gray-100 border border-gray-700 leading-relaxed min-h-[90px]">
+                        جاري تحميل البيانات...
                     </div>
                 </div>
 
-                <!-- Classification Options -->
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-2">التصنيف الرئيسي (Category)</label>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        <button onclick="setCategory('سؤال')" class="category-btn p-3 bg-slate-900 border border-slate-800 rounded-xl hover:border-indigo-500/50 text-sm font-medium transition text-center" data-cat="سؤال">سؤال</button>
-                        <button onclick="setCategory('طلب')" class="category-btn p-3 bg-slate-900 border border-slate-800 rounded-xl hover:border-indigo-500/50 text-sm font-medium transition text-center" data-cat="طلب">طلب</button>
-                        <button onclick="setCategory('خبر')" class="category-btn p-3 bg-slate-900 border border-slate-800 rounded-xl hover:border-indigo-500/50 text-sm font-medium transition text-center" data-cat="خبر">خبر</button>
-                        <button onclick="setCategory('رأي')" class="category-btn p-3 bg-slate-900 border border-slate-800 rounded-xl hover:border-indigo-500/50 text-sm font-medium transition text-center" data-cat="رأي">رأي</button>
-                    </div>
-                </div>
-
-                <!-- Paraphrase / Editing Section -->
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-2">إعادة الصياغة / النص المحسن</label>
-                    <textarea id="rewrittenText" rows="3" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-slate-200 focus:outline-none focus:border-indigo-500 transition resize-none placeholder-slate-600" placeholder="أدخل الصياغة المحسنة هنا..."></textarea>
-                </div>
-
-                <!-- Quality Rating -->
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-2">تقييم الجودة</label>
-                    <div class="flex items-center gap-2" id="ratingContainer">
-                        <button onclick="setRating(1)" class="star-btn p-2 hover:text-amber-400 text-slate-600 transition" data-rate="1"><i data-lucide="star" class="w-6 h-6"></i></button>
-                        <button onclick="setRating(2)" class="star-btn p-2 hover:text-amber-400 text-slate-600 transition" data-rate="2"><i data-lucide="star" class="w-6 h-6"></i></button>
-                        <button onclick="setRating(3)" class="star-btn p-2 hover:text-amber-400 text-slate-600 transition" data-rate="3"><i data-lucide="star" class="w-6 h-6"></i></button>
-                        <button onclick="setRating(4)" class="star-btn p-2 hover:text-amber-400 text-slate-600 transition" data-rate="4"><i data-lucide="star" class="w-6 h-6"></i></button>
-                        <button onclick="setRating(5)" class="star-btn p-2 hover:text-amber-400 text-slate-600 transition" data-rate="5"><i data-lucide="star" class="w-6 h-6"></i></button>
-                    </div>
+                <!-- Dynamic Annotation Inputs Based on Task Type -->
+                <div id="annotation-inputs" class="space-y-4 mb-6">
+                    <!-- Injected dynamically -->
                 </div>
             </div>
 
-            <!-- Footer Actions -->
-            <div class="flex items-center justify-between border-t border-slate-800/80 pt-4 mt-6">
-                <button onclick="previousSample()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm font-medium transition flex items-center gap-2">
-                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                    <span>السابق</span>
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center pt-4 border-t border-gray-700">
+                <button onclick="prevTask()" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                    ← السابق
                 </button>
-                <button onclick="saveAndNext()" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-medium transition flex items-center gap-2 shadow-lg shadow-emerald-600/20">
-                    <span>حفظ والتالي</span>
-                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                <div class="text-xs text-gray-400 font-mono" id="progress-indicator">مهمة 1 من 32</div>
+                <button onclick="nextTask()" class="btn-primary text-white px-6 py-2 rounded-lg text-sm font-semibold shadow">
+                    حفظ والتالي ←
                 </button>
             </div>
-        </section>
+        </div>
+
+        <!-- Right Column: Task List & Navigation Sidebar -->
+        <div class="card-bg rounded-xl p-4 flex flex-col h-[600px] shadow-lg">
+            <div class="flex justify-between items-center mb-3 pb-2 border-b border-gray-700">
+                <h2 class="font-bold text-sm text-gray-200">قائمة مهام الشهر الحالي (32 مهمة)</h2>
+                <span id="completed-count" class="text-xs text-indigo-400 font-bold">0 / 32 مكتمل</span>
+            </div>
+            <div id="task-list-container" class="overflow-y-auto flex-1 space-y-2 pr-1">
+                <!-- Task list items injected here -->
+            </div>
+        </div>
 
     </main>
 
+    <!-- Thank You Modal / Completion Screen (Hidden by default) -->
+    <div id="thank-you-modal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center p-4 z-50">
+        <div class="card-bg rounded-2xl p-8 max-w-lg w-full text-center shadow-2xl border border-indigo-500">
+            <div class="text-5xl mb-4">🎉</div>
+            <h2 class="text-2xl font-bold text-white mb-2">شكراً لك على إتمام مهام هذا الشهر!</h2>
+            <p class="text-gray-300 text-sm mb-6 leading-relaxed">
+                لقد أكملت بنجاح جميع مهام الترميز والتقييم للدفعة الحالية. تم حفظ إجاباتك محلياً بدقة. يرجى تصدير ملف النتائج بصيغة JSON وإرساله إلى فريق المراجعة.
+            </p>
+            <div class="bg-gray-900 p-4 rounded-xl mb-6 text-right text-xs text-gray-300 space-y-2 border border-gray-700">
+                <div>📌 إجمالي المهام المنجزة: <span id="modal-total" class="font-bold text-indigo-400">32</span></div>
+                <div>📅 دورة النظام: <span class="font-bold text-green-400">نشطة (تتجدد شهرياً تلقائياً)</span></div>
+            </div>
+            <div class="flex space-x-3 space-x-reverse justify-center">
+                <button onclick="exportJSON()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-bold text-sm shadow">
+                    📥 تحميل ملف النتائج النهائي (JSON)
+                </button>
+                <button onclick="closeThankYouModal()" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-3 rounded-xl text-sm font-semibold">
+                    مراجعة الإجابات
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
     <script>
-        // Default dataset
-        let samples = [
-            { id: "sample-101", text: "كيف يمكنني التسجيل في دورة الذكاء الاصطناعي الجديدة؟", category: "سؤال", rewritten: "ما هي خطوات التقديم على دورة الذكاء الاصطناعي؟", rating: 5, completed: true },
-            { id: "sample-102", text: "أرجو إلغاء الطلب الخاص بي ورقم المرجعي هو 48392.", category: "طلب", rewritten: "", rating: 0, completed: false },
-            { id: "sample-103", text: "تم اليوم توقيع اتفاقية تعاون بين الشركة والجامعة لتطوير حلول برمجة.", category: "خبر", rewritten: "", rating: 0, completed: false },
-            { id: "sample-104", text: "التصميم الجديد للموقع ممتازا جداً ويسهل الوصول للخدمات.", category: "رأي", rewritten: "", rating: 0, completed: false }
+        // 32 Robust Multi-Task Monthly Dataset spanning all 7 categories
+        const tasks = [
+            // Category 1: Topic Classification (Topics)
+            { id: "T-101", category: "تصنيف الموضوع", type: "topic", text: "أعلنت شركة التقنية الوطنية عن إطلاق نظام جديد للذكاء الاصطناعي لتحسين كفاءة سلاسل الإمداد والتوريد.", options: ["تكنولوجيا", "اقتصاد وعمل", "رياضيات", "حياة يومية"], expected: "تكنولوجيا" },
+            { id: "T-102", category: "تصنيف الموضوع", type: "topic", text: "توجّه المنتخب الوطني لكرة القدم إلى العاصمة اليوم استعداداً للمباراة النهائية الحاسمة ضمن البطولات القارية.", options: ["رياضة", "سياسة", "ترفيه", "تكنولوجيا"], expected: "رياضة" },
+            { id: "T-103", category: "تصنيف الموضوع", type: "topic", text: "سجلت مؤشرات الأسواق المالية ارتفاعاً ملحوظاً في ختام تعاملات اليوم بدعم من أسهم قطاع الطاقة.", options: ["اقتصاد وعمل", "تكنولوجيا", "صحة", "ترفيه"], expected: "اقتصاد وعمل" },
+            { id: "T-104", category: "تصنيف الموضوع", type: "topic", text: "نظمت البلدية مهرجاناً ثقافياً ترفيهياً للعائلات في الحديقة المركزية بمناسبة العطلة الصيفية.", options: ["حياة يومية ومجتمع", "سياسة", "تكنولوجيا", "رياضة"], expected: "حياة يومية ومجتمع" },
+
+            // Category 2: Sentiment Analysis (مشاعر)
+            { id: "S-201", category: "تحليل المشاعر", type: "sentiment", text: "يا أخي الخدمة ممتازة والتعامل راقي جداً، شكراً لطاقم العمل على سرعة الاستجابة!", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "إيجابي" },
+            { id: "S-202", category: "تحليل المشاعر", type: "sentiment", text: "التطبيق يعلّق كل دقيقة وما عم أقدر أعمل تسجيل دخول بالمرة، أسوأ تجربة!", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "سلبي" },
+            { id: "S-203", category: "تحليل المشاعر", type: "sentiment", text: "المنتج وصل بالميعاد المحدد، بس التغليف كان عادي مش زي ما توقعت.", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "مختلط" },
+            { id: "S-204", category: "تحليل المشاعر", type: "sentiment", text: "تم نشر جدول مواعيد الرحلات الرسمية للأسبوع القادم على الموقع الإلكتروني.", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "محايد" },
+
+            // Category 3: Intent Detection (كشف النية)
+            { id: "I-301", category: "كشف النية", type: "intent", text: "ممكن أعرف كم تكلفة الشحن للمحافظات وهل متاح الدفع عند الاستلام؟", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "استفسار (Inquiry)" },
+            { id: "I-302", category: "كشف النية", type: "intent", text: "طلبت الأوردر من أسبوع ولغاية الحين ما وصلني أي رقم تتبع أو اعتذار!", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "شكوى (Complaint)" },
+            { id: "I-303", category: "كشف النية", type: "intent", text: "أنصح الجميع بتجربة هذا المطعم، الأكل طازج والأسعار مناسبة جداً للعائلات.", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "توصية (Recommendation)" },
+            { id: "I-304", category: "كشف النية", type: "intent", text: "جربت الساعة الذكية لمدة شهر، البطارية ممتازة بس الشاشة ضعيفة تحت الشمس.", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة وتقييم (Review)"], expected: "مراجعة وتقييم (Review)" },
+
+            // Category 4: Dialect Identification (تحديد اللهجة)
+            { id: "D-401", category: "تحديد اللهجة", type: "dialect", text: "شو عم تعمل اليوم؟ خلّينا نطلع نشرب قهوة سوا.", options: ["شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "شامي (Levantine)" },
+            { id: "D-402", category: "تحديد اللهجة", type: "dialect", text: "وايد حلو المكان، يعطيك العافية ما قصرت على الاستقبال الطيب.", options: ["شامي (Levantine)", "خليجي (Gulf)", "مغربي (Maghrebi)", "فصحى (MSA)"], expected: "خليجي (Gulf)" },
+            { id: "D-403", category: "تحديد اللهجة", type: "dialect", text: "إزيك يا باشا، إيه الأخبار الجديدة عندك النهاردة؟", options: ["شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "مصري (Egyptian)" },
+            { id: "D-404", category: "تحديد اللهجة", type: "dialect", text: "تُعد هذه اللوائح التنظيمية خطوة هامة نحو تعزيز الشفافية المؤسسية.", options: ["شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "فصحى (MSA)" },
+
+            // Category 5: Content Safety & Flagging (فلترة الجودة)
+            { id: "F-501", category: "فلترة جودة المحتوى", type: "safety", text: "اشتريت جهاز وتلفون واشتريت كورس وبكرة بروح عادي أصلاً...", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful)"], expected: "غامق/غير مبهم (Ambiguous)" },
+            { id: "F-502", category: "فلترة جودة المحتوى", type: "safety", text: "ربحححححت معنا 100000000$ اضغط على الرابط فورررراً!! www.fake-win.com", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful)"], expected: "سبام/جودة منخفضة (Spam)" },
+            { id: "F-503", category: "فلترة جودة المحتوى", type: "safety", text: "المقال يحتوي على تفاصيل ممتازة وشرح وافي لموضوع أمن الشبكات.", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful)"], expected: "سليم (Clean)" },
+            { id: "F-504", category: "فلترة جودة المحتوى", type: "safety", text: "يا حقير أنت شخص لا تفهم شيئاً وتباً لك ولرأيك!", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful/Offensive)"], expected: "مسيء/ضار (Harmful/Offensive)" },
+
+            // Category 6: E-Commerce Reviews (تقييمات التجارة الإلكترونية)
+            { id: "E-601", category: "تقييمات التجارة الإلكترونية", type: "ecommerce", text: "السماعات صوتها نقي جداً وعزل الضوضاء قوي، بنصح فيها بشدة.", options: ["إيجابي - تقييم عالي", "سلبي - مشكلة صوت", "محايد", "غير متأكد"], expected: "إيجابي - تقييم عالي" },
+            { id: "E-602", category: "تقييمات التجارة الإلكترونية", type: "ecommerce", text: "المقاس طلع أصغر بكتير من المكتوب بجدول المقاسات، بدي أطلب إرجاع.", options: ["إيجابي", "سلبي - خطأ مقاس", "محايد", "استفسار"], expected: "سلبي - خطأ مقاس" },
+            { id: "E-603", category: "تقييمات التجارة الإلكترونية", type: "ecommerce", text: "الغسالة كويسة بس صوتها عالي شوية وقت العصر وسعرها معقول.", options: ["إيجابي تماماً", "مختلط (أداء جيد وصوت مرتفع)", "سلبي بالكامل", "غير مفيد"], expected: "مختلط (أداء جيد وصوت مرتفع)" },
+            { id: "E-604", category: "تقييمات التجارة الإلكترونية", type: "ecommerce", text: "الكتاب وصل تالف والصفحات ممزقة من الإهمال بالشحن.", options: ["تلف شحن - سلبي", "إيجابي", "محايد", "جيد جداً"], expected: "تلف شحن - سلبي" },
+
+            // Category 7: Social Media Posts (منشورات وسائل التواصل)
+            { id: "M-701", category: "منشورات وسائل التواصل", type: "social", text: "صباح الخير أصدقائي! شو خططكم لنهاية الأسبوع الجاري؟", options: ["تفاعل اجتماعي إيجابي", "شكوى عامة", "خبر عاجل", "إعلان تجاري"], expected: "تفاعل اجتماعي إيجابي" },
+            { id: "M-702", category: "منشورات وسائل التواصل", type: "social", text: "سعيد جداً بمشاركتي اليوم في مؤتمر التكنولوجيا المالي وتطوير حلول السحابة.", options: ["إنجاز مهني / إيجابي", "سلبي", "استفسار", "محايد"], expected: "إنجاز مهني / إيجابي" },
+            { id: "M-703", category: "منشورات وسائل التواصل", type: "social", text: "زحمة غير طبيعية في الطريق الرئيسي صباح اليوم، يفضل استخدام طرق بديلة.", options: ["تنبيه مجتمعي / خدمة عامة", "إعلان", "ترفيه", "رياضة"], expected: "تنبيه مجتمعي / خدمة عامة" },
+            { id: "M-704", category: "منشورات وسائل التواصل", type: "social", text: "تغطية خاصة ومباشرة لمباراة اليوم بين الفريقين في نهائي البطولة.", options: ["تغطية رياضية", "سياسة", "تكنولوجيا", "أزياء"], expected: "تغطية رياضية" }
         ];
 
         let currentIndex = 0;
+        let userResponses = JSON.parse(localStorage.getItem('arabic_annotation_responses')) || {};
 
-        function init() {
-            lucide.createIcons();
-            renderSampleList();
-            loadCurrentSample();
+        function initApp() {
+            renderTaskList();
+            loadTask(currentIndex);
+            updateBadge();
         }
 
-        function renderSampleList() {
-            const listEl = document.getElementById('sampleList');
-            const totalCount = document.getElementById('totalCount');
-            const progressStatus = document.getElementById('progressStatus');
-            
-            listEl.innerHTML = '';
-            totalCount.innerText = samples.length;
-            
-            const completedCount = samples.filter(s => s.completed).length;
-            progressStatus.innerText = `مكتمل: ${completedCount}/${samples.length}`;
+        function updateBadge() {
+            const date = new Date();
+            const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+            document.getElementById('current-month-badge').innerText = `دفعة شهر ${months[date.getMonth()]} ${date.getFullYear()}`;
+        }
 
-            samples.forEach((sample, index) => {
+        function renderTaskList() {
+            const container = document.getElementById('task-list-container');
+            container.innerHTML = '';
+            
+            let completedCount = 0;
+
+            tasks.forEach((task, idx) => {
+                const isCompleted = userResponses[task.id] !== undefined;
+                if (isCompleted) completedCount++;
+
                 const item = document.createElement('div');
-                item.onclick = () => selectSample(index);
-                item.className = `p-3 rounded-lg cursor-pointer border transition flex items-center justify-between ${
-                    index === currentIndex 
-                        ? 'bg-indigo-950/60 border-indigo-500 text-slate-100' 
-                        : 'bg-slate-900/40 border-slate-800/80 hover:bg-slate-900 text-slate-400'
-                }`;
+                item.className = `p-3 rounded-lg cursor-pointer text-xs flex justify-between items-center transition ${idx === currentIndex ? 'bg-indigo-900 border border-indigo-500' : 'bg-gray-900 hover:bg-gray-800'}`;
+                item.onclick = () => { currentIndex = idx; loadTask(currentIndex); };
                 
                 item.innerHTML = `
-                    <div class="truncate pl-2">
-                        <div class="text-xs font-mono text-slate-500 mb-0.5">${sample.id}</div>
-                        <div class="text-sm truncate">${sample.text}</div>
-                    </div>
                     <div>
-                        ${sample.completed 
-                            ? '<span class="text-emerald-400 bg-emerald-950/40 p-1 rounded-full"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="5 13l4 4L19 7"></path></svg></span>' 
-                            : '<span class="w-2 h-2 rounded-full bg-slate-700 block"></span>'
-                        }
+                        <span class="font-mono text-indigo-300 font-bold">${task.id}</span>
+                        <div class="text-gray-300 truncate w-48 mt-1">${task.text}</div>
                     </div>
+                    <span class="px-2 py-1 rounded text-[10px] ${isCompleted ? 'bg-green-900 text-green-300' : 'bg-gray-800 text-gray-400'}">
+                        ${isCompleted ? 'مكتمل' : 'معلق'}
+                    </span>
                 `;
-                listEl.appendChild(item);
+                container.appendChild(item);
             });
+
+            document.getElementById('completed-count').innerText = `${completedCount} / ${tasks.length} مكتمل`;
+            if (completedCount === tasks.length) {
+                document.getElementById('thank-you-modal').classList.remove('hidden');
+            }
         }
 
-        function loadCurrentSample() {
-            const current = samples[currentIndex];
-            if (!current) return;
+        function loadTask(idx) {
+            const task = tasks[idx];
+            document.getElementById('task-id-badge').innerText = `ID: ${task.id} | ${task.category}`;
+            document.getElementById('task-text-display').innerText = task.text;
+            document.getElementById('progress-indicator').innerText = `مهمة ${idx + 1} من ${tasks.length}`;
 
-            document.getElementById('itemIdBadge').innerText = `ID: ${current.id}`;
-            document.getElementById('originalText').innerText = current.text;
-            document.getElementById('rewrittenText').value = current.rewritten || '';
+            const inputsContainer = document.getElementById('annotation-inputs');
+            inputsContainer.innerHTML = `
+                <label class="block text-xs font-semibold text-gray-400 mb-2">اختر التصنيف المناسب:</label>
+                <div class="grid grid-cols-2 gap-3">
+                    ${task.options.map(opt => `
+                        <label class="flex items-center space-x-3 space-x-reverse p-3 bg-gray-900 rounded-lg border border-gray-700 cursor-pointer hover:border-indigo-500 transition">
+                            <input type="radio" name="annotation_choice" value="${opt}" ${userResponses[task.id] === opt ? 'checked' : ''} class="text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                            <span class="text-sm text-gray-200">${opt}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            `;
 
-            const statusBadge = document.getElementById('statusBadge');
-            if (current.completed) {
-                statusBadge.innerText = "مكتمل";
-                statusBadge.className = "text-xs font-medium px-2.5 py-1 rounded bg-emerald-950/60 text-emerald-400 border border-emerald-800/50";
+            const statusBadge = document.getElementById('completion-status');
+            if (userResponses[task.id]) {
+                statusBadge.className = 'text-xs px-3 py-1 rounded-full bg-green-900 text-green-300 font-semibold';
+                statusBadge.innerText = 'مكتمل';
             } else {
-                statusBadge.innerText = "قيد المراجعه";
-                statusBadge.className = "text-xs font-medium px-2.5 py-1 rounded bg-amber-950/60 text-amber-400 border border-amber-800/50";
+                statusBadge.className = 'text-xs px-3 py-1 rounded-full bg-yellow-900 text-yellow-300 font-semibold';
+                statusBadge.innerText = 'قيد العمل';
             }
 
-            highlightCategory(current.category);
-            highlightRating(current.rating);
-            renderSampleList();
+            renderTaskList();
         }
 
-        function selectSample(index) {
-            saveCurrentState();
-            currentIndex = index;
-            loadCurrentSample();
-        }
-
-        function setCategory(category) {
-            samples[currentIndex].category = category;
-            highlightCategory(category);
-        }
-
-        function highlightCategory(category) {
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                if (btn.getAttribute('data-cat') === category) {
-                    btn.className = "category-btn p-3 bg-indigo-600 border border-indigo-500 text-white rounded-xl text-sm font-medium transition text-center shadow-lg shadow-indigo-600/20";
-                } else {
-                    btn.className = "category-btn p-3 bg-slate-900 border border-slate-800 rounded-xl hover:border-indigo-500/50 text-sm font-medium transition text-center text-slate-300";
-                }
-            });
-        }
-
-        function setRating(rating) {
-            samples[currentIndex].rating = rating;
-            highlightRating(rating);
-        }
-
-        function highlightRating(rating) {
-            document.querySelectorAll('.star-btn').forEach(btn => {
-                const rateVal = parseInt(btn.getAttribute('data-rate'));
-                if (rateVal <= rating) {
-                    btn.className = "star-btn p-2 text-amber-400 transition";
-                } else {
-                    btn.className = "star-btn p-2 text-slate-600 hover:text-amber-400 transition";
-                }
-            });
-        }
-
-        function saveCurrentState() {
-            if (!samples[currentIndex]) return;
-            samples[currentIndex].rewritten = document.getElementById('rewrittenText').value;
-            if (samples[currentIndex].category && samples[currentIndex].rating > 0) {
-                samples[currentIndex].completed = true;
+        function saveCurrentAndMove(step) {
+            const selected = document.querySelector('input[name="annotation_choice"]:checked');
+            if (selected) {
+                userResponses[tasks[currentIndex].id] = selected.value;
+                localStorage.setItem('arabic_annotation_responses', JSON.stringify(userResponses));
             }
-        }
 
-        function saveAndNext() {
-            saveCurrentState();
-            samples[currentIndex].completed = true;
-            if (currentIndex < samples.length - 1) {
-                currentIndex++;
+            currentIndex += step;
+            if (currentIndex < 0) currentIndex = 0;
+            if (currentIndex >= tasks.length) {
+                currentIndex = tasks.length - 1;
+                document.getElementById('thank-you-modal').classList.remove('hidden');
             }
-            loadCurrentSample();
+            loadTask(currentIndex);
         }
 
-        function previousSample() {
-            saveCurrentState();
-            if (currentIndex > 0) {
-                currentIndex--;
-            }
-            loadCurrentSample();
+        function nextTask() { saveCurrentAndMove(1); }
+        function prevTask() { saveCurrentAndMove(-1); }
+
+        function closeThankYouModal() {
+            document.getElementById('thank-you-modal').classList.add('hidden');
         }
 
-        function exportData() {
-            saveCurrentState();
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(samples, null, 2));
+        function exportJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({
+                annotator_session: "user_" + Math.random().toString(36).substring(2, 8),
+                submission_date: new Date().toISOString(),
+                total_tasks: tasks.length,
+                responses: userResponses
+            }, null, 4));
+            
             const downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `arabic_dataset_annotated_${new Date().toISOString().slice(0,10)}.json`);
+            downloadAnchor.setAttribute("download", "arabic_annotation_monthly_results.json");
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
         }
 
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if (Array.isArray(data) && data.length > 0) {
-                        samples = data;
-                        currentIndex = 0;
-                        loadCurrentSample();
-                    } else {
-                        alert("ملف JSON غير صالح أو فارغ.");
-                    }
-                } catch (err) {
-                    alert("تعذر قراءة ملف JSON.");
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        document.addEventListener('DOMContentLoaded', init);
+        window.onload = initApp;
     </script>
 </body>
 </html>
