@@ -154,7 +154,7 @@
 
             <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1.25rem; border-top: 1px solid rgba(255,255,255,0.08); margin-top: 1.5rem; gap: 0.5rem;">
                 <button onclick="prevTask()" class="btn-secondary">← السابق</button>
-                <div id="progress-indicator" style="font-family: monospace; font-size: 0.75rem; color: #94a3b8; background: #0f172a; padding: 0.4rem 0.75rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);">مهمة 1 من 28</div>
+                <div id="progress-indicator" style="font-family: monospace; font-size: 0.75rem; color: #94a3b8; background: #0f172a; padding: 0.4rem 0.75rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);">مهمة 1 من 75</div>
                 <button onclick="nextTask()" class="btn-primary">حفظ والتالي ←</button>
             </div>
         </section>
@@ -163,7 +163,7 @@
         <aside class="panel" style="display: flex; flex-direction: column;">
             <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.08);">
                 <h2 style="font-size: 0.9rem; font-weight: 700; color: #e2e8f0;">📋 قائمة مهام الشهر الحالي</h2>
-                <span id="completed-count" style="font-size: 0.7rem; background: #1e1b4b; color: #c7d2fe; border: 1px solid #312e81; padding: 0.2rem 0.6rem; border-radius: 50px; font-weight: bold;">0 / 28</span>
+                <span id="completed-count" style="font-size: 0.7rem; background: #1e1b4b; color: #c7d2fe; border: 1px solid #312e81; padding: 0.2rem 0.6rem; border-radius: 50px; font-weight: bold;">0 / 75</span>
             </div>
             <div id="task-list-container" class="sidebar-list">
                 <!-- Task list items injected here -->
@@ -178,10 +178,10 @@
             <div style="width: 55px; height: 55px; background: linear-gradient(135deg, #059669, #0d9488); border-radius: 14px; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 6px 15px rgba(5, 150, 105, 0.3);">🎉</div>
             <h2 style="font-size: 1.25rem; font-weight: 900; color: #fff; margin-bottom: 0.4rem;">أهلاً بك، تم إتمام مهام الشهر!</h2>
             <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 1.25rem; line-height: 1.6;">
-                لقد أنجزت بنجاح كافة مهام التقييم والترميز للدفعة الحالية. سيتم تدوير المهام تلقائياً للشهر القادم. يرجى تصدير ملف النتائج بصيغة JSON.
+                لقد أنجزت بنجاح كافة مهام التقييم والترميز (75 مهمة) للدفعة الحالية. سيتم تدوير المهام تلقائياً للشهر القادم. يرجى تصدير ملف النتائج بصيغة JSON.
             </p>
             <div style="background: #0f172a; padding: 0.85rem; border-radius: 0.75rem; margin-bottom: 1.25rem; text-align: right; font-size: 0.8rem; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 0.4rem;">
-                <div style="display: flex; justify-content: space-between;"><span>إجمالي المهام المنجزة:</span> <strong style="color: #818cf8;">28 / 28</strong></div>
+                <div style="display: flex; justify-content: space-between;"><span>إجمالي المهام المنجزة:</span> <strong style="color: #818cf8;">75 / 75</strong></div>
                 <div style="display: flex; justify-content: space-between;"><span>حالة الدفعة الشهرية:</span> <strong style="color: #34d399;">مكتملة بنجاح ✓</strong></div>
             </div>
             <div style="display: flex; flex-direction: column; gap: 0.6rem;">
@@ -191,43 +191,98 @@
         </div>
     </div>
 
-    <!-- Script Logic -->
+    <!-- Script Logic with 75 Tasks -->
     <script>
         const tasks = [
+            // Category 1: Topic Classification (T-101 to T-112)
             { id: "T-101", category: "تصنيف الموضوع", text: "أعلنت شركة التقنية الوطنية عن إطلاق نظام جديد للذكاء الاصطناعي لتحسين كفاءة سلاسل الإمداد والتوريد.", options: ["تكنولوجيا", "اقتصاد وعمل", "رياضيات", "حياة يومية"], expected: "تكنولوجيا" },
             { id: "T-102", category: "تصنيف الموضوع", text: "توجّه المنتخب الوطني لكرة القدم إلى العاصمة اليوم استعداداً للمباراة النهائية الحاسمة ضمن البطولات القارية.", options: ["رياضة", "سياسة", "ترفيه", "تكنولوجيا"], expected: "رياضة" },
             { id: "T-103", category: "تصنيف الموضوع", text: "سجلت مؤشرات الأسواق المالية ارتفاعاً ملحوظاً في ختام تعاملات اليوم بدعم من أسهم قطاع الطاقة.", options: ["اقتصاد وعمل", "تكنولوجيا", "صحة", "ترفيه"], expected: "اقتصاد وعمل" },
             { id: "T-104", category: "تصنيف الموضوع", text: "نظمت البلدية مهرجاناً ثقافياً ترفيهياً للعائلات في الحديقة المركزية بمناسبة العطلة الصيفية.", options: ["حياة يومية ومجتمع", "سياسة", "تكنولوجيا", "رياضة"], expected: "حياة يومية ومجتمع" },
-            
+            { id: "T-105", category: "تصنيف الموضوع", text: "صادق البرلمان على مشروع القانون الجديد المتعلق بتطوير البنية التحتية للطاقة المتجددة.", options: ["سياسة", "رياضة", "تكنولوجيا", "ترفيه"], expected: "سياسة" },
+            { id: "T-106", category: "تصنيف الموضوع", text: "أعلنت وزارة الصحة عن بدء حملة التطعيم الوطنية ضد الفيروس الموسمي في كافة المراكز الطبية.", options: ["صحة وطب", "رياضة", "سياسة", "تكنولوجيا"], expected: "صحة وطب" },
+            { id: "T-107", category: "تصنيف الموضوع", text: "طرحت شركة أجنبية هاتقاً ذكياً جديداً مزوداً بكاميرا خارقة ومعالج رسوميات فائق السرعة.", options: ["تكنولوجيا", "اقتصاد وعمل", "حياة يومية", "رياضة"], expected: "تكنولوجيا" },
+            { id: "T-108", category: "تصنيف الموضوع", text: "حقق الفيلم السينمائي الجديد إيرادات قياسية في شباك التذاكر خلال الأسبوع الأول من عرضه.", options: ["ترفيه وفنون", "سياسة", "اقتصاد وعمل", "صحة"], expected: "ترفيه وفنون" },
+            { id: "T-109", category: "تصنيف الموضوع", text: "عقدت اللجنة الاقتصادية المشتركة اجتماعاً لاستعراض فرص الاستثمار المتاحة في قطاع الصناعات التحويلية.", options: ["اقتصاد وعمل", "رياضة", "حياة يومية", "تكنولوجيا"], expected: "اقتصاد وعمل" },
+            { id: "T-110", category: "تصنيف الموضوع", text: "فاز الباحث الشاب بجائزة الابتكار العلمي عن بحثه المتميز في مجال تنقية المياه بالطاقة الشمسية.", options: ["تكنولوجيا", "سياسة", "ترفيه", "رياضة"], expected: "تكنولوجيا" },
+            { id: "T-111", category: "تصنيف الموضوع", text: "أقيمت بطولة الجمهورية للسباحة وسط منافسة شرسة بين الأندية الرياضية المختلفة.", options: ["رياضة", "اقتصاد", "صحة", "حياة يومية"], expected: "رياضة" },
+            { id: "T-112", category: "تصنيف الموضوع", text: "شهدت شوارع المدينة ازدحاماً مرورياً شديداً بسبب أعمال الصيانة الجارية في الجسر الرئيسي.", options: ["حياة يومية ومجتمع", "سياسة", "تكنولوجيا", "ترفيه"], expected: "حياة يومية ومجتمع" },
+
+            // Category 2: Sentiment Analysis (S-201 to S-212)
             { id: "S-201", category: "تحليل المشاعر", text: "يا أخي الخدمة ممتازة والتعامل راقي جداً، شكراً لطاقم العمل على سرعة الاستجابة!", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "إيجابي" },
             { id: "S-202", category: "تحليل المشاعر", text: "التطبيق يعلّق كل دقيقة وما عم أقدر أعمل تسجيل دخول بالمرة، أسوأ تجربة!", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "سلبي" },
             { id: "S-203", category: "تحليل المشاعر", text: "المنتج وصل بالميعاد المحدد، بس التغليف كان عادي مش زي ما توقعت.", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "مختلط" },
             { id: "S-204", category: "تحليل المشاعر", text: "تم نشر جدول مواعيد الرحلات الرسمية للأسبوع القادم على الموقع الإلكتروني.", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "محايد" },
+            { id: "S-205", category: "تحليل المشاعر", text: "منبر رائع جداً استفدت منه بشكل كبير في تطوير مهاراتي البرمجية!", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "إيجابي" },
+            { id: "S-206", category: "تحليل المشاعر", text: "خدمة العملاء سيئة للغاية ولا أحد يرد على الاتصالات أبداً.", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "سلبي" },
+            { id: "S-207", category: "تحليل المشاعر", text: "الجهاز أداؤه ممتاز بالالعاب بس بطاريته تخلص بسرعة كبيرة.", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "مختلط" },
+            { id: "S-208", category: "تحليل المشاعر", text: "أعلنت الهيئة عن تعديل أوقات الدوام الرسمي ابتداءً من يوم الأحد القادم.", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "محايد" },
+            { id: "S-209", category: "تحليل المشاعر", text: "يا الله ما أجمل هذا المكان، راحة نفسية لا توصف وطبيعة ساحرة!", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "إيجابي" },
+            { id: "S-210", category: "تحليل المشاعر", text: "خسارة الفلوس بهذا المنتج كانت أكبر مقلب بحياتي، لا ينصح به نهائياً.", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "سلبي" },
+            { id: "S-211", category: "تحليل المشاعر", text: "الطعم لذيذ جداً بس السعر مبالغ فيه مقارنة بحجم الوجبة.", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "مختلط" },
+            { id: "S-212", category: "تحليل المشاعر", text: "صدر التقرير السنوي للشركة متضمناً الأرقام المالية والأرباح المحققة.", options: ["إيجابي", "سلبي", "محايد", "مختلط"], expected: "محايد" },
 
+            // Category 3: Intent Detection (I-301 to I-311)
             { id: "I-301", category: "كشف النية", text: "ممكن أعرف كم تكلفة الشحن للمحافظات وهل متاح الدفع عند الاستلام؟", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "استفسار (Inquiry)" },
             { id: "I-302", category: "كشف النية", text: "طلبت الأوردر من أسبوع ولغاية الحين ما وصلني أي رقم تتبع أو اعتذار!", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "شكوى (Complaint)" },
             { id: "I-303", category: "كشف النية", text: "أنصح الجميع بتجربة هذا المطعم، الأكل طازج والأسعار مناسبة جداً للعائلات.", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "توصية (Recommendation)" },
             { id: "I-304", category: "كشف النية", text: "جربت الساعة الذكية لمدة شهر، البطارية ممتازة بس الشاشة ضعيفة تحت الشمس.", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة وتقييم (Review)"], expected: "مراجعة وتقييم (Review)" },
+            { id: "I-305", category: "كشف النية", text: "هل توجد خصومات متاحة حالياً عند شراء أكثر من قطعتين؟", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "استفسار (Inquiry)" },
+            { id: "I-306", category: "كشف النية", text: "المنتج وصل مكسور ومليء بالخدوش، هذا إهمال واضح في التوصيل!", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "شكوى (Complaint)" },
+            { id: "I-307", category: "كشف النية", text: "أفضل منصة تعليمية استخدمتها بحياتي، شرح الأستاذ ممتاز جداً.", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "توصية (Recommendation)" },
+            { id: "I-308", category: "كشف النية", text: "ما هي شروط الاستبدال والإرجاع في حال لم يناسبني المقاس؟", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "استفسار (Inquiry)" },
+            { id: "I-309", category: "كشف النية", text: "الشحن تأخر خمسة أيام عن الموعد المتفق عليه دون أي سبب مبرر.", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "شكوى (Complaint)" },
+            { id: "I-310", category: "كشف النية", text: "جربت الفندق ونظافته ممتازة وطاقم الاستقبال محترف جداً.", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة وتقييم (Review)"], expected: "مراجعة وتقييم (Review)" },
+            { id: "I-311", category: "كشف النية", text: "هل يتوفر هذا اللون بمقاس متوسط أم نفذت الكمية؟", options: ["استفسار (Inquiry)", "شكوى (Complaint)", "توصية (Recommendation)", "مراجعة (Review)"], expected: "استفسار (Inquiry)" },
 
-            { id: "D-401", category: "تحديد اللهجة", text: "شو عم تعمل اليوم؟ خلّينا نطلع نشرب قهوة سوا.", options: ["شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "شامي (Levantine)" },
-            { id: "D-402", category: "تحديد اللهجة", text: "وايد حلو المكان، يعطيك العافية ما قصرت على الاستقبال الطيب.", options: ["شامي (Levantine)", "خليجي (Gulf)", "مغربي (Maghrebi)", "فصحى (MSA)"], expected: "خليجي (Gulf)" },
-            { id: "D-403", category: "تحديد اللهجة", text: "إزيك يا باشا، إيه الأخبار الجديدة عندك النهاردة؟", options: ["شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "مصري (Egyptian)" },
-            { id: "D-404", category: "تحديد اللهجة", text: "تُعد هذه اللوائح التنظيمية خطوة هامة نحو تعزيز الشفافية المؤسسية.", options: ["شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "فصحى (MSA)" },
+            // Category 4: Dialect Identification (D-401 to D-411)
+            { id: "D-401", category: "تحديد اللهجة", type: "dialect", text: "شو عم تعمل اليوم؟ خلّينا نطلع نشرب قهوة سوا.", options: ["شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "شامي (Levantine)" },
+            { id: "D-402", category: "تحديد اللهجة", type: "dialect", text: "وايد حلو المكان، يعطيك العافية ما قصرت على الاستقبال الطيب.", options: ["شامي (Levantine)", "خليجي (Gulf)", "مغربي (Maghrebi)", "فصحى (MSA)"], expected: "خليجي (Gulf)" },
+            { id: "D-403", category: "تحديد اللهجة", type: "dialect", text: "إزيك يا باشا، إيه الأخبار الجديدة عندك النهاردة؟", options: ["شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "مصري (Egyptian)" },
+            { id: "D-404", category: "تحديد اللهجة", type: "dialect", text: "تُعد هذه اللوائح التنظيمية خطوة هامة نحو تعزيز الشفافية المؤسسية.", options: ["شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "فصحى (MSA)" },
+            { id: "D-405", category: "تحديد اللهجة", type: "dialect", text: "بزاف عجبني هادشي، تبارك الله عليك خدمة نقية.", options: ["مغربي (Maghrebi)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "مغربي (Maghrebi)" },
+            { id: "D-406", category: "تحديد اللهجة", type: "dialect", text: "وش راك خويا لاباس عليك؟ رانا طالعين للجبل اليوم.", options: ["جزائري/مغاربي (Maghrebi)", "خليجي (Gulf)", "شامي (Levantine)", "فصحى (MSA)"], expected: "جزائري/مغاربي (Maghrebi)" },
+            { id: "D-407", category: "تحديد اللهجة", type: "dialect", text: "وشلونك طال عمرك؟ عساك بخير ومرتاح.", options: ["خليجي (Gulf)", "شامي (Levantine)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "خليجي (Gulf)" },
+            { id: "D-408", category: "تحديد اللهجة", type: "dialect", text: "يخرب بيتك شو مهضوم! ضحكتني من قلبي والله.", options: ["شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)", "فصحى (MSA)"], expected: "شامي (Levantine)" },
+            { id: "D-409", category: "تحديد اللهجة", type: "dialect", text: "يا عم الحاج احنا بنقول كلام معقول ومفيش فيه أي افتكاسات.", options: ["مصري (Egyptian)", "شامي (Levantine)", "خليجي (Gulf)", "فصحى (MSA)"], expected: "مصري (Egyptian)" },
+            { id: "D-410", category: "تحديد اللهجة", type: "dialect", text: "يُرجى الالتزام التام بكافة التعليمات الصادرة عن إدارة المؤسسة.", options: ["فصحى (MSA)", "شامي (Levantine)", "خليجي (Gulf)", "مصري (Egyptian)"], expected: "فصحى (MSA)" },
+            { id: "D-411", category: "تحديد اللهجة", type: "dialect", text: "ديما منور يا غالي، ربنا يوفقك في كل خطواتك.", options: ["مصري (Egyptian)", "خليجي (Gulf)", "شامي (Levantine)", "فصحى (MSA)"], expected: "مصري (Egyptian)" },
 
-            { id: "F-501", category: "فلترة جودة المحتوى", text: "اشتريت جهاز وتلفون واشتريت كورس وبكرة بروح عادي أصلاً...", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful)"], expected: "غامق/غير مبهم (Ambiguous)" },
-            { id: "F-502", category: "فلترة جودة المحتوى", text: "ربحححححت معنا 100000000$ اضغط على الرابط فورررراً!! www.fake-win.com", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful)"], expected: "سبام/جودة منخفضة (Spam)" },
-            { id: "F-503", category: "فلترة جودة المحتوى", text: "المقال يحتوي على تفاصيل ممتازة وشرح وافي لموضوع أمن الشبكات.", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful)"], expected: "سليم (Clean)" },
-            { id: "F-504", category: "فلترة جودة المحتوى", text: "يا حقير أنت شخص لا تفهم شيئاً وتباً لك ولرأيك!", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful/Offensive)"], expected: "مسيء/ضار (Harmful/Offensive)" },
+            // Category 5: Content Safety & Flagging (F-501 to F-510)
+            { id: "F-501", category: "فلترة جودة المحتوى", type: "safety", text: "اشتريت جهاز وتلفون واشتريت كورس وبكرة بروح عادي أصلاً...", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful)"], expected: "غامق/غير مبهم (Ambiguous)" },
+            { id: "F-502", category: "فلترة جودة المحتوى", type: "safety", text: "ربحححححت معنا 100000000$ اضغط على الرابط فورررراً!! www.fake-win.com", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful)"], expected: "سبام/جودة منخفضة (Spam)" },
+            { id: "F-503", category: "فلترة جودة المحتوى", type: "safety", text: "المقال يحتوي على تفاصيل ممتازة وشرح وافي لموضوع أمن الشبكات.", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful)"], expected: "سليم (Clean)" },
+            { id: "F-504", category: "فلترة جودة المحتوى", type: "safety", text: "يا حقير أنت شخص لا تفهم شيئاً وتباً لك ولرأيك!", options: ["سليم (Clean)", "غامق/غير مبهم (Ambiguous)", "سبام/جودة منخفضة (Spam)", "مسيء/ضار (Harmful/Offensive)"], expected: "مسيء/ضار (Harmful/Offensive)" },
+            { id: "F-505", category: "فلترة جودة المحتوى", type: "safety", text: "يمكنكم متابعة حسابنا للحصول على عروض مميزة وأسعار تنافسية يومياً.", options: ["سليم (Clean)", "سبام", "مسيء", "غامض"], expected: "سليم (Clean)" },
+            { id: "F-506", category: "فلترة جودة المحتوى", type: "safety", text: "تابعونا لزيادة متابعين انستغرام مجاناً وبدون أي مجهود 100k followers!", options: ["سليم (Clean)", "سبام/جودة منخفضة (Spam)", "مسيء", "غامض"], expected: "سبام/جودة منخفضة (Spam)" },
+            { id: "F-507", category: "فلترة جودة المحتوى", type: "safety", text: "سأقوم بضربك وقتلك إن تجرأت وتحدثت معي هكذا مرة أخرى!", options: ["سليم (Clean)", "سبام", "مسيء/عنيف (Harmful/Violent)", "غامض"], expected: "مسيء/عنيف (Harmful/Violent)" },
+            { id: "F-508", category: "فلترة جودة المحتوى", type: "safety", text: "النص غير واضح ولا يوصل أي معنى مفيد للمستخدم القارئ.", options: ["سليم", "غامق/غير مبهم (Ambiguous)", "سبام", "مسيء"], expected: "غامق/غير مبهم (Ambiguous)" },
+            { id: "F-509", category: "فلترة جودة المحتوى", type: "safety", text: "شكراً جزيلاً لجهودكم المبذولة في خدمة العملاء ومساعدة الجميع.", options: ["سليم (Clean)", "سبام", "مسيء", "غامض"], expected: "سليم (Clean)" },
+            { id: "F-510", category: "فلترة جودة المحتوى", type: "safety", text: "احصل على قرض مالي فوري خلال 5 دقائق بدون ضمانات عبر هذا الرابط المشبوه!", options: ["سليم", "سبام/جودة منخفضة (Spam)", "مسيء", "غامض"], expected: "سبام/جودة منخفضة (Spam)" },
 
-            { id: "E-601", category: "تقييمات ومراجعات", text: "التصميم الجديد للموقع ممتاز جداً ويسهل الوصول للخدمات بسرعة.", options: ["رأي", "خبر", "طلب", "سؤال"], expected: "رأي" },
-            { id: "E-602", category: "تقييمات ومراجعات", text: "أرجو إلغاء الطلب الخاص بي ورقم مرجعي هو 48392.", options: ["رأي", "خبر", "طلب", "سؤال"], expected: "طلب" },
-            { id: "E-603", category: "تقييمات ومراجعات", text: "تم اليوم توقيع اتفاقية تعاون بين الشركة والجامعة لتأهيل الخريجين.", options: ["رأي", "خبر", "طلب", "سؤال"], expected: "خبر" },
-            { id: "E-604", category: "تقييمات ومراجعات", text: "كيف يمكنني التسجيل في دورة الذكاء الاصطناعي الجديدة المتاحة؟", options: ["رأي", "خبر", "طلب", "سؤال"], expected: "سؤال" },
+            // Category 6: E-Commerce Reviews (E-601 to E-610)
+            { id: "E-601", category: "تقييمات ومراجعات", type: "advanced", text: "التصميم الجديد للموقع ممتاز جداً ويسهل الوصول للخدمات بسرعة.", options: ["رأي", "خبر", "طلب", "سؤال"], expected: "رأي" },
+            { id: "E-602", category: "تقييمات ومراجعات", type: "advanced", text: "أرجو إلغاء الطلب الخاص بي ورقم مرجعي هو 48392.", options: ["رأي", "خبر", "طلب", "سؤال"], expected: "طلب" },
+            { id: "E-603", category: "تقييمات ومراجعات", type: "advanced", text: "تم اليوم توقيع اتفاقية تعاون بين الشركة والجامعة لتأهيل الخريجين.", options: ["رأي", "خبر", "طلب", "سؤال"], expected: "خبر" },
+            { id: "E-604", category: "تقييمات ومراجعات", type: "advanced", text: "كيف يمكنني التسجيل في دورة الذكاء الاصطناعي الجديدة المتاحة؟", options: ["رأي", "خبر", "طلب", "سؤال"], expected: "سؤال" },
+            { id: "E-605", category: "تقييمات التجارة", text: "السماعات صوتها نقي جداً وعزل الضوضاء قوي، بنصح فيها بشدة.", options: ["إيجابي - تقييم عالي", "سلبي - مشكلة صوت", "محايد", "غير متأكد"], expected: "إيجابي - تقييم عالي" },
+            { id: "E-606", category: "تقييمات التجارة", text: "المقاس طلع أصغر بكتير من المكتوب بجدول المقاسات، بدي أطلب إرجاع.", options: ["إيجابي", "سلبي - خطأ مقاس", "محايد", "استفسار"], expected: "سلبي - خطأ مقاس" },
+            { id: "E-607", category: "تقييمات التجارة", text: "الغسالة كويسة بس صوتها عالي شوية وقت العصر وسعرها معقول.", options: ["إيجابي تماماً", "مختلط (أداء جيد وصوت مرتفع)", "سلبي بالكامل", "غير مفيد"], expected: "مختلط (أداء جيد وصوت مرتفع)" },
+            { id: "E-608", category: "تقييمات التجارة", text: "الكتاب وصل تالف والصفحات ممزقة من الإهمال بالشحن.", options: ["تلف شحن - سلبي", "إيجابي", "محايد", "جيد جداً"], expected: "تلف شحن - سلبي" },
+            { id: "E-609", category: "تقييمات التجارة", text: "الخامة ممتازة جداً ونفس الصورة تماماً، شكراً للمتجر على المصداقية.", options: ["إيجابي - تقييم عالي", "سلبي", "محايد", "مختلط"], expected: "إيجابي - تقييم عالي" },
+            { id: "E-610", category: "تقييمات التجارة", text: "اللون مختلف تماماً عن اللي طلبته بالصورة، خدمة سيئة.", options: ["إيجابي", "سلبي - خطأ لون", "محايد", "استفسار"], expected: "سلبي - خطأ لون" },
 
-            { id: "M-701", category: "منشورات وسائل التواصل", text: "صباح الخير أصدقائي! شو خططكم لنهاية الأسبوع الجاري؟", options: ["تفاعل اجتماعي إيجابي", "شكوى عامة", "خبر عاجل", "إعلان تجاري"], expected: "تفاعل اجتماعي إيجابي" },
-            { id: "M-702", category: "منشورات وسائل التواصل", text: "سعيد جداً بمشاركتي اليوم في مؤتمر التكنولوجيا المالي وتطوير حلول السحابة.", options: ["إنجاز مهني / إيجابي", "سلبي", "استفسار", "محايد"], expected: "إنجاز مهني / إيجابي" },
-            { id: "M-703", category: "منشورات وسائل التواصل", text: "زحمة غير طبيعية في الطريق الرئيسي صباح اليوم، يفضل استخدام طرق بديلة.", options: ["تنبيه مجتمعي / خدمة عامة", "إعلان", "ترفيه", "رياضة"], expected: "تنبيه مجتمعي / خدمة عامة" },
-            { id: "M-704", category: "منشورات وسائل التواصل", text: "تغطية خاصة ومباشرة لمباراة اليوم بين الفريقين في نهائي البطولة.", options: ["تغطية رياضية", "سياسة", "تكنولوجيا", "أزياء"], expected: "تغطية رياضية" }
+            // Category 7: Social Media Posts (M-701 to M-710)
+            { id: "M-701", category: "منشورات وسائل التواصل", type: "social", text: "صباح الخير أصدقائي! شو خططكم لنهاية الأسبوع الجاري؟", options: ["تفاعل اجتماعي إيجابي", "شكوى عامة", "خبر عاجل", "إعلان تجاري"], expected: "تفاعل اجتماعي إيجابي" },
+            { id: "M-702", category: "منشورات وسائل التواصل", type: "social", text: "سعيد جداً بمشاركتي اليوم في مؤتمر التكنولوجيا المالي وتطوير حلول السحابة.", options: ["إنجاز مهني / إيجابي", "سلبي", "استفسار", "محايد"], expected: "إنجاز مهني / إيجابي" },
+            { id: "M-703", category: "منشورات وسائل التواصل", type: "social", text: "زحمة غير طبيعية في الطريق الرئيسي صباح اليوم، يفضل استخدام طرق بديلة.", options: ["تنبيه مجتمعي / خدمة عامة", "إعلان", "ترفيه", "رياضة"], expected: "تنبيه مجتمعي / خدمة عامة" },
+            { id: "M-704", category: "منشورات وسائل التواصل", type: "social", text: "تغطية خاصة ومباشرة لمباراة اليوم بين الفريقين في نهائي البطولة.", options: ["تغطية رياضية", "سياسة", "تكنولوجيا", "أزياء"], expected: "تغطية رياضية" },
+            { id: "M-705", category: "منشورات وسائل التواصل", type: "social", text: "ألف مبروك لكل التخرجين وعقبال أعلى المراتب العلمية والعملية إن شاء الله.", options: ["تهنئة واحتفال", "شكوى", "إعلان", "سؤال"], expected: "تهنئة واحتفال" },
+            { id: "M-706", category: "منشورات وسائل التواصل", type: "social", text: "يا شباب هل من نصيحة لأفضل لغة برمجة لبدء التعلم في مجال الذكاء الاصطناعي؟", options: ["استفسار تقني", "إعلان", "خبر", "ترفيه"], expected: "استفسار تقني" },
+            { id: "M-707", category: "منشورات وسائل التواصل", type: "social", text: "تم بحمد الله إطلاق موقعنا الإلكتروني الجديد كلياً، ننتظر زيارتكم وملاحظاتكم.", options: ["إعلان إطلاق رسمي", "شكوى", "استفسار", "رياضة"], expected: "إعلان إطلاق رسمي" },
+            { id: "M-708", category: "منشورات وسائل التواصل", type: "social", text: "الجو اليوم برات البيت بجنن، مين طلع مشوار ومين قاعد بالبيت؟", options: ["دردشة اجتماعية", "خبر سياسي", "تنبيه أمني", "إعلان"], expected: "دردشة اجتماعية" },
+            { id: "M-709", category: "منشورات وسائل التواصل", type: "social", text: "انقطع التيار الكهربائي عن الحي منذ ساعتين وحتى الآن لم يتم إيجاد حل!", options: ["شكوى خدمات عامة", "إعلان", "ترفيه", "تغريدة إيجابية"], expected: "شكوى خدمات عامة" },
+            { id: "M-710", category: "منشورات وسائل التواصل", type: "social", text: "فخور جداً بانضمامي إلى فريق العمل الجديد في شركة تكنولوجيا كبرى بقطاع السحابة.", options: ["إنجاز مهني / إيجابي", "سلبي", "استفسار", "محايد"], expected: "إنجاز مهني / إيجابي" }
         ];
 
         let currentIndex = 0;
@@ -281,7 +336,6 @@
 
             const inputsContainer = document.getElementById('annotation-inputs');
             
-            // On mobile, stack options in 1 column; on wider screens, use 2 columns
             const gridStyle = window.innerWidth >= 640 ? 'grid-template-columns: repeat(2, 1fr);' : 'grid-template-columns: 1fr;';
             inputsContainer.style.cssText = `display: grid; gap: 0.75rem; ${gridStyle}`;
 
