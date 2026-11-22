@@ -123,6 +123,18 @@
         </div>
     </header>
 
+    <!-- Monthly Challenge Intro -->
+    <section class="panel" style="grid-column: 1 / -1; padding: 1rem 1.25rem; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:0.75rem;">
+        <div>
+            <h2 id="monthly-challenge-title" style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:0.25rem;">تحدي هذا الشهر</h2>
+            <p style="font-size:0.8rem;color:#cbd5e1;line-height:1.6;">اختبر قدرتك على تصنيف النصوص العربية. لديك حتى 200 سؤال عشوائي لهذا الشهر، ويتم حفظ تقدمك تلقائياً.</p>
+        </div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
+            <span id="monthly-question-total" style="background:#0f172a;border:1px solid rgba(255,255,255,0.08);padding:0.4rem 0.7rem;border-radius:0.6rem;font-size:0.75rem;color:#c7d2fe;">200 سؤال كحد أقصى</span>
+            <span id="monthly-reset-date" style="background:#0f172a;border:1px solid rgba(255,255,255,0.08);padding:0.4rem 0.7rem;border-radius:0.6rem;font-size:0.75rem;color:#94a3b8;">—</span>
+        </div>
+    </section>
+
     <!-- Main Grid Workspace -->
     <main class="main-container">
 
@@ -408,6 +420,15 @@
             const hours = Math.floor((remaining % 86400000) / 3600000);
             const countdown = document.getElementById('month-reset-countdown');
             if (countdown) countdown.textContent = `يتجدد خلال ${days} يوم و${hours} ساعة`;
+            const resetDate = document.getElementById('monthly-reset-date');
+            if (resetDate) resetDate.textContent = `بداية التحدي التالي: ${nextMonth.toLocaleDateString('ar', {day:'numeric',month:'long',year:'numeric'})}`;
+            const title = document.getElementById('monthly-challenge-title');
+            if (title) title.textContent = `تحدي ${monthsNames[currentActiveDate.getMonth()]} ${currentActiveDate.getFullYear()}`;
+            const total = document.getElementById('monthly-question-total');
+            if (total) total.textContent = `${tasks.length} سؤال متاح هذا الشهر`;
+            // Reload the page when the month changes, even if it stayed open.
+            const liveMonthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+            if (liveMonthKey !== monthKey) window.location.reload();
         }
         updateMonthCountdown();
         setInterval(updateMonthCountdown, 60000);
