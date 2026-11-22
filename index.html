@@ -118,7 +118,7 @@
             </div>
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-            <span id="batch-month-label" style="background: #1e1b4b; color: #c7d2fe; border: 1px solid #312e81; font-size: 0.7rem; padding: 0.3rem 0.75rem; border-radius: 50px; font-weight: 600;">دفعة الشهر الحالي</span>
+            <span id="batch-month-label" style="background: #1e1b4b; color: #c7d2fe; border: 1px solid #312e81; font-size: 0.7rem; padding: 0.3rem 0.75rem; border-radius: 50px; font-weight: 600;">تحدي هذا الشهر</span><span id="month-reset-countdown" style="font-size:0.7rem;color:#94a3b8;padding:0.3rem 0.5rem;">—</span>
             <button onclick="exportJSON()" class="btn-success">📥 تصدير النتائج (JSON)</button>
         </div>
     </header>
@@ -371,32 +371,46 @@
         ];
 
         // Non-repeating monthly offset selection: guarantees previous months' questions do not overlap
-        function getNonRepeatingMonthlyTasks(pool, count = 200) {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = now.getMonth(); // 0 to 11
+        const monthsNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+        const currentActiveDate = new Date();
+        const monthKey = `${currentActiveDate.getFullYear()}-${String(currentActiveDate.getMonth()+1).padStart(2,'0')}`;
+        const monthlyTaskKey = `bayanat_monthly_tasks_${monthKey}`;
+        const monthlyResponseKey = `bayanat_monthly_responses_${monthKey}`;
+        const MONTHLY_LIMIT = 200;
 
-            // Calculate a unique starting index based on the month and year offset
-            // e.g., January = index 0, February = index 200, March = index 400, etc.
-            const totalMonthsElapsed = (year * 12) + month;
-            const startIndex = (totalMonthsElapsed * count) % pool.length;
-
-            let selected = [];
-            for (let i = 0; i < count; i++) {
-                let poolIndex = (startIndex + i) % pool.length;
-                selected.push(pool[poolIndex]);
+        // Randomize once per month, then persist the task IDs for stable progress across reloads.
+        function getMonthlyTasks(pool, limit = MONTHLY_LIMIT) {
+            const savedIds = JSON.parse(localStorage.getItem(monthlyTaskKey) || "null");
+            if (Array.isArray(savedIds) && savedIds.length) {
+                const savedTasks = savedIds.map(id => pool.find(task => task.id === id)).filter(Boolean);
+                if (savedTasks.length) return savedTasks;
             }
+            const shuffled = [...pool];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            const selected = shuffled.slice(0, Math.min(limit, pool.length));
+            localStorage.setItem(monthlyTaskKey, JSON.stringify(selected.map(task => task.id)));
             return selected;
         }
 
-        const tasks = getNonRepeatingMonthlyTasks(masterPool, 200);
-
+        const tasks = getMonthlyTasks(masterPool, MONTHLY_LIMIT);
         let currentIndex = 0;
-        let userResponses = JSON.parse(localStorage.getItem('arabic_annotation_responses')) || {};
+        let userResponses = JSON.parse(localStorage.getItem(monthlyResponseKey) || "{}");
+        document.getElementById('batch-month-label').innerText = `تحدي ${monthsNames[currentActiveDate.getMonth()]} ${currentActiveDate.getFullYear()}`;
 
-        const monthsNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
-        const currentActiveDate = new Date();
-        document.getElementById('batch-month-label').innerText = `دفعة ${monthsNames[currentActiveDate.getMonth()]} ${currentActiveDate.getFullYear()}`;
+        function updateMonthCountdown() {
+            const nextMonth = new Date(currentActiveDate.getFullYear(), currentActiveDate.getMonth() + 1, 1);
+            const now = new Date();
+            const remaining = Math.max(0, nextMonth - now);
+            const days = Math.floor(remaining / 86400000);
+            const hours = Math.floor((remaining % 86400000) / 3600000);
+            const countdown = document.getElementById('month-reset-countdown');
+            if (countdown) countdown.textContent = `يتجدد خلال ${days} يوم و${hours} ساعة`;
+        }
+        updateMonthCountdown();
+        setInterval(updateMonthCountdown, 60000);
 
         function initApp() {
             renderTaskList();
@@ -492,7 +506,7 @@
             const selected = document.querySelector('input[name="annotation_choice"]:checked');
             if (selected) {
                 userResponses[tasks[currentIndex].id] = selected.value;
-                localStorage.setItem('arabic_annotation_responses', JSON.stringify(userResponses));
+                localStorage.setItem(monthlyResponseKey, JSON.stringify(userResponses));
             }
 
             currentIndex += step;
@@ -506,7 +520,7 @@
 
         function nextTask() { saveCurrentAndMove(1); }
         function prevTask() { saveCurrentAndMove(-1); }
-        function closeThankYouModal() { document.getElementById('thank-you-modal').classList.add('hidden'); }
+        function closeThankYouModal() { document.getElementById('thank-you-modal').classList.remove('active'); }
 
         function exportJSON() {
             const now = new Date();
@@ -514,7 +528,9 @@
                 annotator_session: "annotator_" + Math.random().toString(36).substring(2, 8),
                 batch_period: `${monthsNames[now.getMonth()]} ${now.getFullYear()}`,
                 submission_timestamp: new Date().toISOString(),
-                total_tasks_completed: Object.keys(userResponses).length,
+                challenge_month: monthKey,
+                challenge_limit: tasks.length,
+                total_tasks_completed: Object.keys(userResponses).filter(id => tasks.some(task => task.id === id)).length,
                 responses: userResponses
             }, null, 4));
             
