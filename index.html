@@ -382,32 +382,116 @@
             { id: "M-710", category: "منشورات وسائل التواصل", type: "social", text: "فخور جداً بانضمامي إلى فريق العمل الجديد في شركة تكنولوجيا كبرى بقطاع السحابة.", options: ["إنجاز مهني / إيجابي", "سلبي", "استفسار", "محايد"], expected: "إنجاز مهني / إيجابي" }
         ];
 
-        // Non-repeating monthly offset selection: guarantees previous months' questions do not overlap
+        // Build a 10,000-item randomized challenge bank from the existing labeled examples.
+        // This is template-based expansion (not AI-generated content); wrappers preserve each item's label.
         const monthsNames = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
         const currentActiveDate = new Date();
         const monthKey = `${currentActiveDate.getFullYear()}-${String(currentActiveDate.getMonth()+1).padStart(2,'0')}`;
         const monthlyTaskKey = `bayanat_monthly_tasks_${monthKey}`;
         const monthlyResponseKey = `bayanat_monthly_responses_${monthKey}`;
-        const MONTHLY_LIMIT = 200;
+        const monthlyCountKey = `bayanat_monthly_count_${monthKey}`;
+        const MONTHLY_MIN = 50;
+        const MONTHLY_MAX = 200;
+        const GENERATED_POOL_SIZE = 10000;
 
-        // Randomize once per month, then persist the task IDs for stable progress across reloads.
-        function getMonthlyTasks(pool, limit = MONTHLY_LIMIT) {
-            const savedIds = JSON.parse(localStorage.getItem(monthlyTaskKey) || "null");
-            if (Array.isArray(savedIds) && savedIds.length) {
-                const savedTasks = savedIds.map(id => pool.find(task => task.id === id)).filter(Boolean);
-                if (savedTasks.length) return savedTasks;
+        function buildGeneratedPool(sourcePool) {
+            const intros = [
+                "يرجى تحليل النص التالي:",
+                "اقرأ المحتوى التالي وحدد التصنيف:",
+                "المطلوب تقييم النص الآتي:",
+                "أمامك النص التالي للتحليل:",
+                "حلّل المحتوى المعروض أدناه:",
+                "في المهمة التالية، قيّم النص:",
+                "النص المراد مراجعته:",
+                "اختر الإجابة المناسبة بناءً على النص:",
+                "تأمل النص التالي ثم أجب:",
+                "إليك محتوى جديد للتصنيف:"
+            ];
+            const outros = [
+                " اختر التصنيف الأنسب.",
+                " ما الخيار الصحيح؟",
+                " حدد إجابتك من الخيارات المتاحة.",
+                " يرجى تقديم التصنيف المناسب.",
+                " استخدم الخيارات أدناه للإجابة.",
+                " اختر وصفاً دقيقاً للمحتوى.",
+                " أجب وفق مضمون النص.",
+                " ما الفئة التي ينتمي إليها؟",
+                " حدد النتيجة الأقرب.",
+                " أكمل المهمة باختيار إجابة."
+            ];
+            const generated = [];
+            for (let i = 0; i < GENERATED_POOL_SIZE; i++) {
+                const source = sourcePool[i % sourcePool.length];
+                const variant = Math.floor(i / sourcePool.length);
+                const intro = intros[variant % intros.length];
+                const outro = outros[Math.floor(variant / intros.length) % outros.length];
+                generated.push({
+                    ...source,
+                    id: `G-${String(i + 1).padStart(5, '0')}`,
+                    text: `${intro} ${source.text} ${outro}`
+                });
             }
-            const shuffled = [...pool];
+            return generated;
+        }
+
+        const generatedPool = buildGeneratedPool(masterPool);
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
             for (let i = shuffled.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
             }
-            const selected = shuffled.slice(0, Math.min(limit, pool.length));
+            return shuffled;
+        }
+
+        // Pick a random monthly challenge size (50–200) once and persist it.
+        let monthlyCount = Number(localStorage.getItem(monthlyCountKey));
+        if (!Number.isInteger(monthlyCount) || monthlyCount < MONTHLY_MIN || monthlyCount > MONTHLY_MAX) {
+            monthlyCount = Math.floor(Math.random() * (MONTHLY_MAX - MONTHLY_MIN + 1)) + MONTHLY_MIN;
+            localStorage.setItem(monthlyCountKey, String(monthlyCount));
+        }
+
+        // Keep the selected month's task IDs stable across refreshes.
+        function getMonthlyTasks(pool) {
+            const savedIds = JSON.parse(localStorage.getItem(monthlyTaskKey) || "null");
+            if (Array.isArray(savedIds) && savedIds.length === monthlyCount) {
+                const savedTasks = savedIds.map(id => pool.find(task => task.id === id)).filter(Boolean);
+                if (savedTasks.length === monthlyCount) return savedTasks;
+            }
+            const selected = shuffleArray(pool).slice(0, monthlyCount);
             localStorage.setItem(monthlyTaskKey, JSON.stringify(selected.map(task => task.id)));
             return selected;
         }
 
-        const tasks = getMonthlyTasks(masterPool, MONTHLY_LIMIT);
+        const tasks = getMonthlyTasks(generatedPool);
+        document.getElementById('batch-month-label').innerText = `تحدي ${monthsNames[currentActiveDate.getMonth()]} ${currentActiveDate.getFullYear()}`;
+
+        function updateMonthCountdown() {
+            const nextMonth = new Date(currentActiveDate.getFullYear(), currentActiveDate.getMonth() + 1, 1);
+            const now = new Date();
+            const remaining = Math.max(0, nextMonth - now);
+            const days = Math.floor(remaining / 86400000);
+            const hours = Math.floor((remaining % 86400000) / 3600000);
+            const countdown = document.getElementById('month-reset-countdown');
+            if (countdown) countdown.textContent = `يتجدد خلال ${days} يوم و${hours} ساعة`;
+            const resetDate = document.getElementById('monthly-reset-date');
+            if (resetDate) resetDate.textContent = `بداية التحدي التالي: ${nextMonth.toLocaleDateString('ar', {day:'numeric',month:'long',year:'numeric'})}`;
+            const title = document.getElementById('monthly-challenge-title');
+            if (title) title.textContent = `تحدي ${monthsNames[currentActiveDate.getMonth()]} ${currentActiveDate.getFullYear()}`;
+            const total = document.getElementById('monthly-question-total');
+            if (total) total.textContent = `${tasks.length} سؤال متاح هذا الشهر`;
+            const liveMonthKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+            if (liveMonthKey !== monthKey) window.location.reload();
+        }
+        updateMonthCountdown();
+        setInterval(updateMonthCountdown, 60000);
+
+        function initApp() {
+            renderTaskList();
+            loadTask(currentIndex);
+        }
+
         let currentIndex = 0;
         let userResponses = JSON.parse(localStorage.getItem(monthlyResponseKey) || "{}");
         document.getElementById('batch-month-label').innerText = `تحدي ${monthsNames[currentActiveDate.getMonth()]} ${currentActiveDate.getFullYear()}`;
